@@ -11,6 +11,7 @@ import {
   Routes,
 } from "react-router-dom";
 import PageNotFound from "./module/layout/PageNotFound";
+import TagManagementPage from "./module/tag/TagManagementPage";
 
 dayjs.locale("zh-cn");
 
@@ -21,6 +22,7 @@ const App = () => {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/welcome" element={<div>hello</div>} />
+            <Route path="/tags" element={<TagManagementPage />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/welcome" replace />} />
