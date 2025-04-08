@@ -1,4 +1,9 @@
-import { ContactsOutlined, SmileFilled, TagsOutlined } from "@ant-design/icons";
+import {
+  ContactsOutlined,
+  MailOutlined,
+  SmileFilled,
+  TagsOutlined,
+} from "@ant-design/icons";
 import { ProLayoutProps } from "@ant-design/pro-components";
 import { GetProp } from "antd";
 
@@ -9,6 +14,11 @@ const route: GetProp<ProLayoutProps, "route"> = {
       path: "/welcome",
       name: "欢迎",
       icon: <SmileFilled />,
+    },
+    {
+      path: "/mails",
+      name: "询价邮件",
+      icon: <MailOutlined />,
     },
     {
       path: "/salers",
