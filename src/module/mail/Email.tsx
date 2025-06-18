@@ -1,4 +1,5 @@
 import { Attachment } from "./Attachment";
+import { Forward } from "./Forward";
 
 export type Email = {
   id: number;
@@ -12,6 +13,9 @@ export type Email = {
   raw_headers: string;
 };
 
-export type EmailWithAttachments = Email & {
+export type WithAttachments<T> = T & {
   attachments: Attachment[];
+};
+export type WithForwards<T> = T & {
+  forwards: Forward[];
 };

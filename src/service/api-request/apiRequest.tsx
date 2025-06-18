@@ -5,6 +5,11 @@ import { ApiResponse } from "./ApiResponse";
 export const API_PREFIX = window.location.href.startsWith("http://localhost")
   ? "http://127.0.0.1:8000/api"
   : "http://192.168.100.246:8000/api";
+export const MAIL_API_PREFIX = window.location.href.startsWith(
+  "http://localhost"
+)
+  ? "http://127.0.0.1:8001"
+  : "http://192.168.100.246:8001";
 
 export async function apiRequest<T>(
   path: string,
@@ -12,6 +17,37 @@ export async function apiRequest<T>(
   option: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   return fetch(API_PREFIX + path, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    ...option,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...option.headers,
+    },
+  }).then(async (response) => {
+    let body;
+    try {
+      body = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      throw new ApiError(response.status, {});
+    }
+
+    if (response.status < 200 || response.status >= 400) {
+      throw new ApiError(response.status, body);
+    }
+    return body;
+  });
+}
+
+export async function mailApiRequest<T>(
+  path: string,
+  body: unknown = {},
+  option: RequestInit = {}
+): Promise<ApiResponse<T>> {
+  return fetch(MAIL_API_PREFIX + path, {
     method: "POST",
     body: JSON.stringify(body),
     credentials: "include",

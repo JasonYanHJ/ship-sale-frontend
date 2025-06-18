@@ -1,14 +1,17 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { EmailWithAttachments } from "./Email";
 import { getAllMails } from "./mailService";
 import { ExpandedRowRender } from "rc-table/lib/interface";
 import { Attachment } from "./Attachment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import replaceCidImages from "./replaceCidImages";
+import { Email, WithAttachments, WithForwards } from "./Email";
+import { SalerWithTags } from "../saler/Saler";
+import { getAllSalers } from "../saler/salerService";
+import SelectForwardToSaler from "./SelectForwardToSaler";
 
-type DataSourceType = EmailWithAttachments;
+type DataSourceType = WithForwards<WithAttachments<Email>>;
 
 const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
   record,
@@ -137,6 +140,15 @@ const expandedRowRender: ExpandedRowRender<DataSourceType> = (record) => {
 };
 
 const MailForwardPage = () => {
+  const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
+  const reloadAllSalers = async () => {
+    setAllSalers(null);
+    setAllSalers((await getAllSalers()).data);
+  };
+  useEffect(() => {
+    reloadAllSalers();
+  }, []);
+
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: "主题",
@@ -154,6 +166,17 @@ const MailForwardPage = () => {
       title: "发送时间",
       dataIndex: "date_sent",
       minWidth: 100,
+    },
+    {
+      title: "转发",
+      render: (_dom, entity) =>
+        allSalers && (
+          <SelectForwardToSaler
+            salers={allSalers}
+            emailId={entity.id}
+            to_address={entity.forwards[0]?.to_addresses[0]}
+          />
+        ),
     },
   ];
 
