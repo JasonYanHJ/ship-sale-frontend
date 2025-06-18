@@ -10,6 +10,7 @@ import { Email, WithAttachments, WithForwards } from "./Email";
 import { SalerWithTags } from "../saler/Saler";
 import { getAllSalers } from "../saler/salerService";
 import SelectForwardToSaler from "./SelectForwardToSaler";
+import styled from "styled-components";
 
 type DataSourceType = WithForwards<WithAttachments<Email>>;
 
@@ -78,6 +79,12 @@ const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
   );
 };
 
+const StyledProTable = styled(ProTable<Attachment>)`
+  .ant-table-wrapper {
+    overflow-x: hidden;
+  }
+`;
+
 const expandedRowRender: ExpandedRowRender<DataSourceType> = (record) => {
   const datasource = record.attachments.filter(
     (x) => x.content_disposition_type === "attachment"
@@ -121,7 +128,7 @@ const expandedRowRender: ExpandedRowRender<DataSourceType> = (record) => {
     <div>
       {datasource.length !== 0 && (
         <div style={{ padding: "12px 48px 12px 0" }}>
-          <ProTable<Attachment>
+          <StyledProTable
             rowKey="id"
             size="small"
             columns={columns}
