@@ -39,16 +39,17 @@ const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
       </div>
       {show &&
         (record.content_html ? (
-          <div
+          <iframe
+            srcDoc={replaceCidImages(record.content_html)}
             style={{
-              backgroundColor: "white",
-              padding: 12,
+              width: "100%",
+              height: "60vh",
               border: "1px solid rgba(0,0,0,0.35)",
               borderRadius: 6,
+              backgroundColor: "white",
             }}
-            dangerouslySetInnerHTML={{
-              __html: replaceCidImages(record.content_html),
-            }}
+            sandbox="allow-same-origin"
+            title="邮件内容"
           />
         ) : (
           <div>{record.content_text}</div>
