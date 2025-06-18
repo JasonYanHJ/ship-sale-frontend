@@ -2,7 +2,7 @@ import { message } from "antd";
 import { ApiError } from "./ApiError";
 import { ApiResponse } from "./ApiResponse";
 
-const API_PREFIX = window.location.href.startsWith("http://localhost")
+export const API_PREFIX = window.location.href.startsWith("http://localhost")
   ? "http://127.0.0.1:8000/api"
   : "http://192.168.100.246:8000/api";
 

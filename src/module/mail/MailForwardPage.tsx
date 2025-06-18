@@ -6,6 +6,7 @@ import { Attachment } from "./Attachment";
 import { useState } from "react";
 import { Button } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import replaceCidImages from "./replaceCidImages";
 
 type DataSourceType = EmailWithAttachments;
 
@@ -45,7 +46,9 @@ const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
               border: "1px solid rgba(0,0,0,0.35)",
               borderRadius: 6,
             }}
-            dangerouslySetInnerHTML={{ __html: record.content_html }}
+            dangerouslySetInnerHTML={{
+              __html: replaceCidImages(record.content_html),
+            }}
           />
         ) : (
           <div>{record.content_text}</div>
