@@ -7,3 +7,9 @@ body {
   min-height: 100vh;
   overflow: auto;
 }
+
+/* 内容过长时允许左右滑动 */
+.ant-table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

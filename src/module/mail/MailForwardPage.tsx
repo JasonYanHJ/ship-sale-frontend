@@ -141,6 +141,10 @@ const MailForwardPage = () => {
     {
       title: "主题",
       dataIndex: "subject",
+      minWidth: 200,
+      render: (subject) => (
+        <div style={{ wordBreak: "break-all" }}>{subject}</div>
+      ),
     },
     {
       title: "发件人",
@@ -149,6 +153,7 @@ const MailForwardPage = () => {
     {
       title: "发送时间",
       dataIndex: "date_sent",
+      minWidth: 100,
     },
   ];
 
