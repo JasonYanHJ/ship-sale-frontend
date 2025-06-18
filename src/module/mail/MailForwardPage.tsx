@@ -52,7 +52,24 @@ const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
             title="邮件内容"
           />
         ) : (
-          <div>{record.content_text}</div>
+          <div
+            style={{
+              width: "100%",
+              maxHeight: "60vh",
+              border: "1px solid rgba(0,0,0,0.35)",
+              borderRadius: 6,
+              backgroundColor: "white",
+              padding: 12,
+              overflowY: "auto",
+            }}
+          >
+            {record.content_text.split("\n").map((text, index) => (
+              <div key={index}>
+                {text}
+                <br />
+              </div>
+            ))}
+          </div>
         ))}
     </div>
   );
