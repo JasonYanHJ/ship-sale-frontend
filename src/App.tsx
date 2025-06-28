@@ -14,25 +14,31 @@ import PageNotFound from "./module/layout/PageNotFound";
 import TagManagementPage from "./module/tag/TagManagementPage";
 import SalerManagementPage from "./module/saler/SalerManagementPage";
 import MailForwardPage from "./module/mail/MailForwardPage";
+import { AuthProvider } from "./module/auth/useAuth";
+import LoginAndRegisterForm from "./module/auth/LoginAndRegister";
 
 dayjs.locale("zh-cn");
 
 const App = () => {
   return (
     <ConfigProvider locale={zhCN}>
-      <Router>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/welcome" element={<div>hello</div>} />
-            <Route path="/mail-forward" element={<MailForwardPage />} />
-            <Route path="/tags" element={<TagManagementPage />} />
-            <Route path="/salers" element={<SalerManagementPage />} />
-          </Route>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginAndRegisterForm />} />
 
-          <Route path="/" element={<Navigate to="/welcome" replace />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Router>
+            <Route element={<Layout />}>
+              <Route path="/welcome" element={<div>hello</div>} />
+              <Route path="/mail-forward" element={<MailForwardPage />} />
+              <Route path="/tags" element={<TagManagementPage />} />
+              <Route path="/salers" element={<SalerManagementPage />} />
+            </Route>
+
+            <Route path="/" element={<Navigate to="/welcome" replace />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ConfigProvider>
   );
 };

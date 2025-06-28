@@ -1,6 +1,7 @@
 import { message } from "antd";
 import { ApiError } from "./ApiError";
 import { ApiResponse } from "./ApiResponse";
+import { TOKEN_LOCAL_STORAGE_KEY } from "../../module/auth/useAuth";
 
 export const API_PREFIX = window.location.href.startsWith("http://localhost")
   ? "http://127.0.0.1:8000/api"
@@ -18,10 +19,13 @@ export async function apiRequest<T>(
 ): Promise<ApiResponse<T>> {
   return fetch(API_PREFIX + path, {
     method: "POST",
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     credentials: "include",
     ...option,
     headers: {
+      Authorization: `Bearer ${
+        localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY) ?? ""
+      }`,
       "Content-Type": "application/json",
       Accept: "application/json",
       ...option.headers,
@@ -49,7 +53,7 @@ export async function mailApiRequest<T>(
 ): Promise<ApiResponse<T>> {
   return fetch(MAIL_API_PREFIX + path, {
     method: "POST",
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     credentials: "include",
     ...option,
     headers: {
