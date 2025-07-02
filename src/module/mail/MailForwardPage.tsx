@@ -1,5 +1,5 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { getAllMails } from "./mailService";
+import { getAllMails, MailRequestParams } from "./mailService";
 import { ExpandedRowRender } from "rc-table/lib/interface";
 import { Attachment } from "./Attachment";
 import { useEffect, useState } from "react";
@@ -164,15 +164,25 @@ const MailForwardPage = () => {
       render: (subject) => (
         <div style={{ wordBreak: "break-all" }}>{subject}</div>
       ),
+      hideInSearch: true,
     },
     {
       title: "发件人",
       dataIndex: "sender",
+      hideInSearch: true,
     },
     {
       title: "发送时间",
       dataIndex: "date_sent",
       minWidth: 100,
+      valueType: "dateTime",
+      hideInSearch: true,
+    },
+    {
+      title: "发送时间",
+      dataIndex: "date_sent",
+      valueType: "date",
+      hideInTable: true,
     },
     {
       title: "转发",
@@ -184,6 +194,7 @@ const MailForwardPage = () => {
             to_address={entity.forwards[0]?.to_addresses[0]}
           />
         ),
+      hideInSearch: true,
     },
   ];
 
@@ -191,12 +202,12 @@ const MailForwardPage = () => {
     <ProTable<DataSourceType>
       rowKey="id"
       columns={columns}
-      request={async () => {
-        const mails = (await getAllMails()).data;
-        return { data: mails, total: mails.length, success: true };
+      request={async (_params) => {
+        const params = _params as MailRequestParams;
+        const response = (await getAllMails(params)).data;
+        return { data: response.data, total: response.total, success: true };
       }}
       expandable={{ expandedRowRender }}
-      search={false}
       bordered
     />
   );
