@@ -1,18 +1,17 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
-import { getAllMails, MailRequestParams } from "./mailService";
+import { getAllMails, MailRequestParams, MailResponse } from "./mailService";
 import { ExpandedRowRender } from "rc-table/lib/interface";
 import { Attachment } from "./Attachment";
 import { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import replaceCidImages from "./replaceCidImages";
-import { Email, WithAttachments, WithForwards } from "./Email";
 import { SalerWithTags } from "../saler/Saler";
 import { getAllSalers } from "../saler/salerService";
 import SelectForwardToSaler from "./SelectForwardToSaler";
 import styled from "styled-components";
 
-type DataSourceType = WithForwards<WithAttachments<Email>>;
+type DataSourceType = MailResponse["data"][0];
 
 const EmailContentDisplay: React.FC<{ record: DataSourceType }> = ({
   record,
@@ -146,6 +145,11 @@ const expandedRowRender: ExpandedRowRender<DataSourceType> = (record) => {
   );
 };
 
+const RFQ_DISPLAY_COLOR: { [key: string]: string } = {
+  ShipServ: "#69e4dd",
+  询价: "blue",
+};
+
 const MailForwardPage = () => {
   const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
   const reloadAllSalers = async () => {
@@ -157,6 +161,28 @@ const MailForwardPage = () => {
   }, []);
 
   const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: "类型",
+      minWidth: 80,
+      render(_dom, entity) {
+        const displayString = entity.rfq_type ?? (entity.rfq ? "询价" : "其他");
+        return (
+          <Tag color={RFQ_DISPLAY_COLOR[displayString]}>{displayString}</Tag>
+        );
+      },
+      hideInSearch: true,
+    },
+    {
+      title: "类型",
+      hideInTable: true,
+      key: "rfq_string",
+      valueType: "select",
+      valueEnum: {
+        ShipServ: "ShipServ",
+        rfq: "询价",
+        no_rfq: "其他",
+      },
+    },
     {
       title: "主题",
       dataIndex: "subject",

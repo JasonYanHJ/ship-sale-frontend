@@ -11,6 +11,9 @@ export type Email = {
   date_sent: string;
   date_received: string;
   raw_headers: string;
+  rfq: true | null;
+  rfq_type: string | null;
+  dispatcher_id: number | null;
 };
 
 export type WithAttachments<T> = T & {
