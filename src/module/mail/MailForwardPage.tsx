@@ -110,6 +110,7 @@ const expandedRowRender: ExpandedRowRender<DataSourceType> = (record) => {
       title: "操作",
       render: (_dom, entity) => [
         <a
+          key="preview"
           href={`${
             window.location.href.startsWith("http://localhost")
               ? "http://127.0.0.1:8000/api"
