@@ -16,6 +16,11 @@ export type Email = {
   dispatcher_id: number | null;
 };
 
+export const RFQ_DISPLAY_COLOR: { [key: string]: string } = {
+  ShipServ: "#69e4dd",
+  询价: "blue",
+};
+
 export type WithAttachments<T> = T & {
   attachments: Attachment[];
 };

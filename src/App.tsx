@@ -16,6 +16,7 @@ import SalerManagementPage from "./module/saler/SalerManagementPage";
 import MailForwardPage from "./module/mail/MailForwardPage";
 import { AuthProvider } from "./module/auth/useAuth";
 import LoginAndRegisterForm from "./module/auth/LoginAndRegister";
+import MailDispatchPage from "./module/mail/MailDispatchPage";
 
 dayjs.locale("zh-cn");
 
@@ -29,6 +30,7 @@ const App = () => {
 
             <Route element={<Layout />}>
               <Route path="/welcome" element={<div>hello</div>} />
+              <Route path="/mail-dispatch" element={<MailDispatchPage />} />
               <Route path="/mail-forward" element={<MailForwardPage />} />
               <Route path="/tags" element={<TagManagementPage />} />
               <Route path="/salers" element={<SalerManagementPage />} />

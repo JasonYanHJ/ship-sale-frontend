@@ -1,5 +1,6 @@
 import {
   ContactsOutlined,
+  FolderOpenOutlined,
   MailOutlined,
   SmileFilled,
   TagsOutlined,
@@ -21,10 +22,16 @@ const route: ExtendedRoute = {
       roles: ["admin", "dispatcher"],
     },
     {
+      path: "/mail-dispatch",
+      name: "分配询价邮件",
+      icon: <FolderOpenOutlined />,
+      roles: ["admin"],
+    },
+    {
       path: "/mail-forward",
       name: "转发询价邮件",
       icon: <MailOutlined />,
-      roles: ["admin", "dispatcher"],
+      roles: ["dispatcher"],
     },
     {
       path: "/salers",

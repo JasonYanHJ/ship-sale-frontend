@@ -6,6 +6,7 @@ export type MailRequestParams = {
   pageSize: number;
   date_sent?: string;
   rfq_string?: string;
+  dispatched?: boolean;
 
   // 通过rfq_string计算得出
   rfq?: true | null;
@@ -17,7 +18,7 @@ export type MailResponse = {
   total: number;
 };
 
-export async function getAllMails(params: MailRequestParams) {
+function processParams(params: MailRequestParams): MailRequestParams {
   const processedParams = { ...params };
 
   // 处理rfq_string
@@ -38,5 +39,16 @@ export async function getAllMails(params: MailRequestParams) {
     }
   }
 
-  return apiRequest<MailResponse>("/emails", processedParams);
+  return processedParams;
+}
+
+export async function getAllMails(params: MailRequestParams) {
+  return apiRequest<MailResponse>("/emails", processParams(params));
+}
+
+export async function getAllMailsByDispatcher(params: MailRequestParams) {
+  return apiRequest<MailResponse>(
+    "/emails/by-dispatcher",
+    processParams(params)
+  );
 }

@@ -1,21 +1,19 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
 import { Tag } from "antd";
-import { SalerWithTags } from "../saler/Saler";
-import { getAllSalers } from "../saler/salerService";
-import SelectForwardToSaler from "./SelectForwardToSaler";
 import MailTable, { MailTableDataSourceType } from "./MailTable";
 import { RFQ_DISPLAY_COLOR } from "./Email";
-import { getAllMailsByDispatcher } from "./mailService";
+import { getAllMails } from "./mailService";
+import { useEffect, useState } from "react";
+import { User } from "../auth/User";
+import { apiRequest } from "../../service/api-request/apiRequest";
+import SelectDispatcher from "./SelectDispatcher";
 
-const MailForwardPage = () => {
-  const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
-  const reloadAllSalers = async () => {
-    setAllSalers(null);
-    setAllSalers((await getAllSalers()).data);
-  };
+const MailDispatchPage = () => {
+  const [allDispatchers, setAllDispatchers] = useState<User[] | null>(null);
   useEffect(() => {
-    reloadAllSalers();
+    apiRequest<User[]>("/users/dispatchers").then((res) =>
+      setAllDispatchers(res.data)
+    );
   }, []);
 
   const columns: ProColumns<MailTableDataSourceType>[] = [
@@ -69,19 +67,32 @@ const MailForwardPage = () => {
       hideInTable: true,
     },
     {
-      title: "转发",
+      title: "分配",
       render: (_dom, entity) =>
-        allSalers && (
-          <SelectForwardToSaler
-            salers={allSalers}
+        allDispatchers && (
+          <SelectDispatcher
+            dispatchers={allDispatchers}
+            dispatcher_id={entity.dispatcher_id}
             emailId={entity.id}
-            to_address={entity.forwards[0]?.to_addresses[0]}
           />
         ),
       hideInSearch: true,
     },
+    {
+      title: "分配状态",
+      key: "dispatched",
+      hideInTable: true,
+      valueType: "select",
+      valueEnum: {
+        not_dispatched: "未分配",
+        dispatched: "已分配",
+      },
+      search: {
+        transform: (v) => v === "dispatched",
+      },
+    },
   ];
-  return <MailTable columns={columns} mailRequest={getAllMailsByDispatcher} />;
+  return <MailTable columns={columns} mailRequest={getAllMails} />;
 };
 
-export default MailForwardPage;
+export default MailDispatchPage;
