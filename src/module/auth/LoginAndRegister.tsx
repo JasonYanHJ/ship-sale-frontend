@@ -150,8 +150,8 @@ const LoginAndRegisterForm = () => {
                   message: "请输入密码",
                 },
                 {
-                  min: 6,
-                  message: "密码长度不能少于6位",
+                  min: 8,
+                  message: "密码长度不能少于8位",
                 },
               ]}
             />
