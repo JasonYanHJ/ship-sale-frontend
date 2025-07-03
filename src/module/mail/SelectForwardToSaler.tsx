@@ -110,7 +110,7 @@ function SelectForwardToSaler({
           showSearch
           value={toAddresses}
           onChange={(v) => setToAddresses(v)}
-          style={{ width: "100%" }}
+          style={{ width: "100%", minWidth: 160 }}
           options={options}
         />
         <Select
@@ -119,7 +119,7 @@ function SelectForwardToSaler({
           showSearch
           value={ccAddresses}
           onChange={(v) => setCcAddresses(v)}
-          style={{ width: "100%" }}
+          style={{ width: "100%", minWidth: 160 }}
           options={options}
         />
       </Space>
