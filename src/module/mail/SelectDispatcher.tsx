@@ -35,6 +35,7 @@ function SelectDispatcher({
 
   return (
     <Select
+      showSearch
       value={currentDispatcher}
       onChange={handleChange}
       options={options}

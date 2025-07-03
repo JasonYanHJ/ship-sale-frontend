@@ -72,6 +72,7 @@ function SelectForwardToSaler({
   ) : (
     <Space>
       <Select
+        showSearch
         value={toAddress}
         onChange={(v) => setToAddress(v)}
         style={{ width: 160 }}
