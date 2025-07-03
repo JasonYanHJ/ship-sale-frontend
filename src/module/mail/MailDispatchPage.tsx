@@ -46,7 +46,6 @@ const MailDispatchPage = () => {
       render: (subject) => (
         <div style={{ wordBreak: "break-all" }}>{subject}</div>
       ),
-      hideInSearch: true,
     },
     {
       title: "发件人",

@@ -7,6 +7,7 @@ export type MailRequestParams = {
   date_sent?: string;
   rfq_string?: string;
   dispatched?: boolean;
+  subject?: string;
 
   // 通过rfq_string计算得出
   rfq?: true | null;
