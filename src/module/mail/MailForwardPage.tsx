@@ -75,7 +75,7 @@ const MailForwardPage = () => {
           <SelectForwardToSaler
             salers={allSalers}
             emailId={entity.id}
-            to_address={entity.forwards[0]?.to_addresses[0]}
+            forward={entity.forwards[0]}
           />
         ),
       hideInSearch: true,

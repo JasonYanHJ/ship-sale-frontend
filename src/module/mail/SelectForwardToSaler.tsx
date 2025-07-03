@@ -2,20 +2,33 @@ import { Button, Flex, message, Select, Space, Tag, Tooltip } from "antd";
 import { SalerWithTags } from "../saler/Saler";
 import { useMemo, useState } from "react";
 import { mailApiRequest } from "../../service/api-request/apiRequest";
+import { Forward } from "./Forward";
 
 function SelectForwardToSaler({
   salers,
-  to_address,
+  forward,
   emailId,
 }: {
   salers: SalerWithTags[];
-  to_address: string | undefined;
+  forward: Forward | undefined;
   emailId: number;
 }) {
-  const [toAddress, setToAddress] = useState<string | undefined>(to_address);
   const [loading, setLoading] = useState(false);
   const [reforwarding, setReforwarding] = useState(false);
-  const [forwaded, setForwaded] = useState<string | undefined>(to_address);
+
+  const [toAddresses, setToAddresses] = useState<string[] | undefined>(
+    forward?.to_addresses
+  );
+  const [forwaded, setForwaded] = useState<string[] | undefined>(
+    forward?.to_addresses
+  );
+
+  const [ccAddresses, setCcAddresses] = useState<string[] | undefined | null>(
+    forward?.cc_addresses
+  );
+  const [copied, setCopied] = useState<string[] | undefined | null>(
+    forward?.cc_addresses
+  );
 
   const options = useMemo(
     () =>
@@ -50,10 +63,14 @@ function SelectForwardToSaler({
 
   const handleForward = () => {
     setLoading(true);
-    mailApiRequest(`/emails/${emailId}/forward`, { to_addresses: [toAddress] })
+    mailApiRequest(`/emails/${emailId}/forward`, {
+      to_addresses: toAddresses,
+      cc_addresses: ccAddresses,
+    })
       .then(() => {
         message.success("转发成功");
-        setForwaded(toAddress);
+        setForwaded(toAddresses);
+        setCopied(ccAddresses);
         setReforwarding(false);
       })
       .catch(() => {
@@ -64,27 +81,55 @@ function SelectForwardToSaler({
 
   return forwaded && !reforwarding ? (
     <Flex align="center" justify="space-between">
-      <span>已转发给: {salers.find((s) => s.email === forwaded)?.name}</span>
+      <Space direction="vertical">
+        <span>
+          收件人:
+          {forwaded
+            .map((f) => salers.find((s) => s.email === f)?.name ?? f)
+            .join(",")}
+        </span>
+        {copied && (
+          <span>
+            抄送:
+            {copied
+              .map((f) => salers.find((s) => s.email === f)?.name ?? f)
+              .join(",")}
+          </span>
+        )}
+      </Space>
       <Button type="link" onClick={() => setReforwarding(true)}>
         重新转发
       </Button>
     </Flex>
   ) : (
-    <Space>
-      <Select
-        showSearch
-        value={toAddress}
-        onChange={(v) => setToAddress(v)}
-        style={{ width: 160 }}
-        options={options}
-      />
+    <Flex align="center" justify="space-between">
+      <Space direction="vertical" style={{ width: "100%" }}>
+        <Select
+          placeholder="收件人"
+          mode="multiple"
+          showSearch
+          value={toAddresses}
+          onChange={(v) => setToAddresses(v)}
+          style={{ width: "100%" }}
+          options={options}
+        />
+        <Select
+          placeholder="抄送"
+          mode="tags"
+          showSearch
+          value={ccAddresses}
+          onChange={(v) => setCcAddresses(v)}
+          style={{ width: "100%" }}
+          options={options}
+        />
+      </Space>
       <Space direction="vertical">
         <Button
           style={{ width: "4rem" }}
           type="link"
           size="small"
           loading={loading}
-          disabled={!toAddress}
+          disabled={!toAddresses || toAddresses.length === 0}
           onClick={handleForward}
         >
           转发
@@ -100,7 +145,7 @@ function SelectForwardToSaler({
           </Button>
         )}
       </Space>
-    </Space>
+    </Flex>
   );
 }
 
