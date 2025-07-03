@@ -50,7 +50,6 @@ const MailDispatchPage = () => {
     {
       title: "发件人",
       dataIndex: "sender",
-      hideInSearch: true,
     },
     {
       title: "发送时间",
