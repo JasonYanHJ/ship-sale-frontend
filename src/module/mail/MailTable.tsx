@@ -77,7 +77,7 @@ const EmailContentDisplay: React.FC<{ record: MailTableDataSourceType }> = ({
 };
 
 const StyledProTable = styled(ProTable<Attachment>)`
-  .ant-table-wrapper {
+  .ant-table-container {
     overflow-x: hidden;
   }
 `;
