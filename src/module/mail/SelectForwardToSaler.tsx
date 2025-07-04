@@ -86,7 +86,7 @@ function SelectForwardToSaler({
   };
 
   return forwaded && !reforwarding ? (
-    <Flex align="center" justify="space-between">
+    <Flex align="center" justify="space-between" style={{ minWidth: 224 }}>
       <Space direction="vertical">
         <span>
           收件人:
