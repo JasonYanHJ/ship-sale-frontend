@@ -1,5 +1,5 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { Tag } from "antd";
+import { Space, Tag } from "antd";
 import MailTable, { MailTableDataSourceType } from "./MailTable";
 import { RFQ_DISPLAY_COLOR } from "./Email";
 import { getAllMails } from "./mailService";
@@ -50,6 +50,32 @@ const MailDispatchPage = () => {
     {
       title: "发件人",
       dataIndex: "sender",
+    },
+    {
+      title: "收件人",
+      dataIndex: "recipients",
+      render(_dom, entity) {
+        return (
+          <Space direction="vertical">
+            {entity.recipients?.map((email) => (
+              <span>{email}</span>
+            ))}
+          </Space>
+        );
+      },
+    },
+    {
+      title: "抄送",
+      dataIndex: "cc",
+      render(_dom, entity) {
+        return (
+          <Space direction="vertical">
+            {entity.cc?.map((email) => (
+              <span>{email}</span>
+            ))}
+          </Space>
+        );
+      },
     },
     {
       title: "发送时间",

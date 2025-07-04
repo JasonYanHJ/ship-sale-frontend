@@ -6,6 +6,8 @@ export type Email = {
   message_id: string;
   subject: string;
   sender: string;
+  recipients: string[] | null;
+  cc: string[] | null;
   content_text: string;
   content_html: string;
   date_sent: string;

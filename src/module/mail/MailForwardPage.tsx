@@ -1,6 +1,6 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useEffect, useState } from "react";
-import { Tag } from "antd";
+import { Space, Tag } from "antd";
 import { SalerWithTags } from "../saler/Saler";
 import { getAllSalers } from "../saler/salerService";
 import SelectForwardToSaler from "./SelectForwardToSaler";
@@ -52,6 +52,32 @@ const MailForwardPage = () => {
     {
       title: "发件人",
       dataIndex: "sender",
+    },
+    {
+      title: "收件人",
+      dataIndex: "recipients",
+      render(_dom, entity) {
+        return (
+          <Space direction="vertical">
+            {entity.recipients?.map((email) => (
+              <span>{email}</span>
+            ))}
+          </Space>
+        );
+      },
+    },
+    {
+      title: "抄送",
+      dataIndex: "cc",
+      render(_dom, entity) {
+        return (
+          <Space direction="vertical">
+            {entity.cc?.map((email) => (
+              <span>{email}</span>
+            ))}
+          </Space>
+        );
+      },
     },
     {
       title: "发送时间",
