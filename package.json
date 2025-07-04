@@ -17,7 +17,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^7.5.0",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "use-resize-observer": "^9.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

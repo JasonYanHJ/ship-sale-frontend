@@ -1,6 +1,5 @@
 import { ProColumns, ProTable } from "@ant-design/pro-components";
 import { MailRequestParams, MailResponse } from "./mailService";
-import { ExpandedRowRender } from "rc-table/lib/interface";
 import { Attachment } from "./Attachment";
 import { useState } from "react";
 import { Button } from "antd";
@@ -8,6 +7,7 @@ import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import replaceCidImages from "./replaceCidImages";
 import styled from "styled-components";
 import { ApiResponse } from "../../service/api-request/ApiResponse";
+import useResizeObserver from "use-resize-observer";
 
 export type MailTableDataSourceType = MailResponse["data"][0];
 
@@ -82,9 +82,12 @@ const StyledProTable = styled(ProTable<Attachment>)`
   }
 `;
 
-const expandedRowRender: ExpandedRowRender<MailTableDataSourceType> = (
-  record
-) => {
+const ANTD_TABLE_CELL_PADDING = 8;
+const ANTD_TABLE_CELL_RIGHT_BORDER = 1;
+function expandedRowRender(
+  record: MailTableDataSourceType,
+  containerWidth: number | undefined
+) {
   const datasource = record.attachments.filter(
     (x) => x.content_disposition_type === "attachment"
   );
@@ -125,7 +128,17 @@ const expandedRowRender: ExpandedRowRender<MailTableDataSourceType> = (
   ];
 
   return (
-    <div>
+    <div
+      style={{
+        width: containerWidth
+          ? containerWidth -
+            2 * ANTD_TABLE_CELL_PADDING -
+            ANTD_TABLE_CELL_RIGHT_BORDER
+          : undefined,
+        position: "sticky",
+        left: ANTD_TABLE_CELL_PADDING,
+      }}
+    >
       {datasource.length !== 0 && (
         <div style={{ padding: "12px 48px 12px 0" }}>
           <StyledProTable
@@ -144,7 +157,7 @@ const expandedRowRender: ExpandedRowRender<MailTableDataSourceType> = (
       <EmailContentDisplay record={record} />
     </div>
   );
-};
+}
 
 const MailTable = ({
   columns,
@@ -155,8 +168,16 @@ const MailTable = ({
     params: MailRequestParams
   ) => Promise<ApiResponse<MailResponse>>;
 }) => {
+  const { width: containerWidth } = useResizeObserver<HTMLDivElement>({
+    ref: document.querySelector(
+      ".mail-table .ant-table-container"
+    ) as HTMLDivElement,
+    box: "content-box",
+  });
+
   return (
     <ProTable<MailTableDataSourceType>
+      className="mail-table"
       rowKey="id"
       columns={columns}
       request={async (_params) => {
@@ -164,7 +185,10 @@ const MailTable = ({
         const response = (await mailRequest(params)).data;
         return { data: response.data, total: response.total, success: true };
       }}
-      expandable={{ expandedRowRender }}
+      expandable={{
+        expandedRowRender: (record) =>
+          expandedRowRender(record, containerWidth),
+      }}
       bordered
     />
   );
