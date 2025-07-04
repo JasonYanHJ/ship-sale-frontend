@@ -3,6 +3,8 @@ import { SalerWithTags } from "../saler/Saler";
 import { useMemo, useState } from "react";
 import { mailApiRequest } from "../../service/api-request/apiRequest";
 import { Forward } from "./Forward";
+import useAuth from "../auth/useAuth";
+import { User } from "../auth/User";
 
 function SelectForwardToSaler({
   salers,
@@ -13,6 +15,9 @@ function SelectForwardToSaler({
   forward: Forward | undefined;
   emailId: number;
 }) {
+  const auth = useAuth();
+  const user = auth.user as User;
+
   const [loading, setLoading] = useState(false);
   const [reforwarding, setReforwarding] = useState(false);
 
@@ -66,6 +71,7 @@ function SelectForwardToSaler({
     mailApiRequest(`/emails/${emailId}/forward`, {
       to_addresses: toAddresses,
       cc_addresses: ccAddresses,
+      reply_to: [user.email],
     })
       .then(() => {
         message.success("转发成功");
