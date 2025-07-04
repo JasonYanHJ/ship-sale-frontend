@@ -44,7 +44,7 @@ const MailForwardPage = () => {
     {
       title: "主题",
       dataIndex: "subject",
-      minWidth: 200,
+      minWidth: 300,
       render: (subject) => (
         <div style={{ wordBreak: "break-all" }}>{subject}</div>
       ),
@@ -52,16 +52,21 @@ const MailForwardPage = () => {
     {
       title: "发件人",
       dataIndex: "sender",
+      minWidth: 220,
+      render(dom) {
+        return <span style={{ wordBreak: "break-all" }}>{dom}</span>;
+      },
     },
     {
       title: "收件人",
       dataIndex: "recipients",
+      minWidth: 220,
       render(_dom, entity) {
         return (
-          <Space direction="vertical">
-            {entity.recipients?.map((email) => (
-              <span>{email}</span>
-            ))}
+          <Space direction="vertical" style={{ wordBreak: "break-all" }}>
+            {entity.recipients && entity.recipients.length > 0
+              ? entity.recipients?.map((email) => <span>{email}</span>)
+              : "-"}
           </Space>
         );
       },
@@ -69,12 +74,13 @@ const MailForwardPage = () => {
     {
       title: "抄送",
       dataIndex: "cc",
+      minWidth: 220,
       render(_dom, entity) {
         return (
-          <Space direction="vertical">
-            {entity.cc?.map((email) => (
-              <span>{email}</span>
-            ))}
+          <Space direction="vertical" style={{ wordBreak: "break-all" }}>
+            {entity.cc && entity.cc.length > 0
+              ? entity.cc?.map((email) => <span>{email}</span>)
+              : "-"}
           </Space>
         );
       },
@@ -103,6 +109,7 @@ const MailForwardPage = () => {
           />
         ),
       hideInSearch: true,
+      fixed: "right",
     },
   ];
   return <MailTable columns={columns} mailRequest={getAllMailsByDispatcher} />;
