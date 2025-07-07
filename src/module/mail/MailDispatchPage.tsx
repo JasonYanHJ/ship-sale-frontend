@@ -63,7 +63,9 @@ const MailDispatchPage = () => {
         return (
           <Space direction="vertical" style={{ wordBreak: "break-all" }}>
             {entity.recipients && entity.recipients.length > 0
-              ? entity.recipients?.map((email) => <span>{email}</span>)
+              ? entity.recipients?.map((email, i) => (
+                  <span key={i}>{email}</span>
+                ))
               : "-"}
           </Space>
         );
@@ -77,7 +79,7 @@ const MailDispatchPage = () => {
         return (
           <Space direction="vertical" style={{ wordBreak: "break-all" }}>
             {entity.cc && entity.cc.length > 0
-              ? entity.cc?.map((email) => <span>{email}</span>)
+              ? entity.cc?.map((email, i) => <span key={i}>{email}</span>)
               : "-"}
           </Space>
         );
