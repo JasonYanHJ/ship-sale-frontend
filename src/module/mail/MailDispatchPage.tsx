@@ -3,18 +3,21 @@ import { Space, Tag } from "antd";
 import MailTable, { MailTableDataSourceType } from "./MailTable";
 import { RFQ_DISPLAY_COLOR } from "./Email";
 import { getAllMails } from "./mailService";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { User } from "../auth/User";
 import { apiRequest } from "../../service/api-request/apiRequest";
 import SelectDispatcher from "./SelectDispatcher";
 
 const MailDispatchPage = () => {
   const [allDispatchers, setAllDispatchers] = useState<User[] | null>(null);
-  useEffect(() => {
+  const reloadAllDispatchers = useCallback(async () => {
     apiRequest<User[]>("/users/dispatchers").then((res) =>
       setAllDispatchers(res.data)
     );
   }, []);
+  useEffect(() => {
+    reloadAllDispatchers();
+  }, [reloadAllDispatchers]);
 
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
@@ -103,6 +106,7 @@ const MailDispatchPage = () => {
       render: (_dom, entity) =>
         allDispatchers && (
           <SelectDispatcher
+            key={`${entity.id}-${entity.dispatcher_id}`}
             dispatchers={allDispatchers}
             dispatcher_id={entity.dispatcher_id}
             emailId={entity.id}
@@ -125,7 +129,15 @@ const MailDispatchPage = () => {
       },
     },
   ];
-  return <MailTable columns={columns} mailRequest={getAllMails} />;
+  return (
+    <MailTable
+      columns={columns}
+      mailRequest={(params) => {
+        reloadAllDispatchers();
+        return getAllMails(params);
+      }}
+    />
+  );
 };
 
 export default MailDispatchPage;

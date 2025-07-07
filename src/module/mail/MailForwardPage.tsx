@@ -1,5 +1,5 @@
 import { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Space, Tag } from "antd";
 import { SalerWithTags } from "../saler/Saler";
 import { getAllSalers } from "../saler/salerService";
@@ -10,13 +10,12 @@ import { getAllMailsByDispatcher } from "./mailService";
 
 const MailForwardPage = () => {
   const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
-  const reloadAllSalers = async () => {
-    setAllSalers(null);
+  const reloadAllSalers = useCallback(async () => {
     setAllSalers((await getAllSalers()).data);
-  };
+  }, []);
   useEffect(() => {
     reloadAllSalers();
-  }, []);
+  }, [reloadAllSalers]);
 
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
@@ -105,6 +104,7 @@ const MailForwardPage = () => {
       render: (_dom, entity) =>
         allSalers && (
           <SelectForwardToSaler
+            key={`${entity.id}-${entity.forwards[0]?.id ?? null}`}
             salers={allSalers}
             emailId={entity.id}
             forward={entity.forwards[0]}
@@ -114,7 +114,15 @@ const MailForwardPage = () => {
       fixed: "right",
     },
   ];
-  return <MailTable columns={columns} mailRequest={getAllMailsByDispatcher} />;
+  return (
+    <MailTable
+      columns={columns}
+      mailRequest={(params) => {
+        reloadAllSalers();
+        return getAllMailsByDispatcher(params);
+      }}
+    />
+  );
 };
 
 export default MailForwardPage;
