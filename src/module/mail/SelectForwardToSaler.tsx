@@ -1,19 +1,22 @@
-import { Button, Flex, message, Select, Space, Tag, Tooltip } from "antd";
+import { Button, Flex, message, Select, Space } from "antd";
 import { SalerWithTags } from "../saler/Saler";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { mailApiRequest } from "../../service/api-request/apiRequest";
 import { Forward } from "./Forward";
 import useAuth from "../auth/useAuth";
 import { User } from "../auth/User";
+import useSalerSelectOptions from "./useSalerSelectOptions";
 
 function SelectForwardToSaler({
   salers,
   forward,
   emailId,
+  defaultCcAddresses,
 }: {
   salers: SalerWithTags[];
   forward: Forward | undefined;
   emailId: number;
+  defaultCcAddresses: string[];
 }) {
   const auth = useAuth();
   const user = auth.user as User;
@@ -35,36 +38,13 @@ function SelectForwardToSaler({
     forward?.cc_addresses
   );
 
-  const options = useMemo(
-    () =>
-      salers.map((s) => ({
-        label: (
-          <Tooltip
-            title={
-              <Flex vertical gap={12} style={{ padding: 12, color: "black" }}>
-                <div>{s.email}</div>
-                <Space wrap>
-                  {s.tags.map((t) => (
-                    <Tag key={t.id} style={{ marginInlineEnd: 0 }}>
-                      {t.name}
-                    </Tag>
-                  ))}
-                </Space>
-                {s.description && (
-                  <div style={{ color: "grey" }}>{s.description}</div>
-                )}
-              </Flex>
-            }
-            color="white"
-            placement="left"
-          >
-            <div>{s.name}</div>
-          </Tooltip>
-        ),
-        value: s.email,
-      })),
-    [salers]
-  );
+  // 没有转发记录时，抄送人受全局默认抄送人影响
+  useEffect(() => {
+    if (forwaded) return;
+    setCcAddresses(defaultCcAddresses);
+  }, [defaultCcAddresses, forwaded]);
+
+  const { options } = useSalerSelectOptions(salers);
 
   const handleForward = () => {
     setLoading(true);

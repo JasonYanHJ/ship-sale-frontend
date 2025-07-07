@@ -1,12 +1,13 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useCallback, useEffect, useState } from "react";
-import { Space, Tag } from "antd";
+import { Select, Space, Tag } from "antd";
 import { SalerWithTags } from "../saler/Saler";
 import { getAllSalers } from "../saler/salerService";
 import SelectForwardToSaler from "./SelectForwardToSaler";
 import MailTable, { MailTableDataSourceType } from "./MailTable";
 import { RFQ_DISPLAY_COLOR } from "./Email";
 import { getAllMailsByDispatcher } from "./mailService";
+import useSalerSelectOptions from "./useSalerSelectOptions";
 
 const MailForwardPage = () => {
   const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
@@ -16,6 +17,8 @@ const MailForwardPage = () => {
   useEffect(() => {
     reloadAllSalers();
   }, [reloadAllSalers]);
+  const { options } = useSalerSelectOptions(allSalers);
+  const [defaultCcAddresses, setDefaultCcAddresses] = useState<string[]>([]);
 
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
@@ -108,6 +111,7 @@ const MailForwardPage = () => {
             salers={allSalers}
             emailId={entity.id}
             forward={entity.forwards[0]}
+            defaultCcAddresses={defaultCcAddresses}
           />
         ),
       hideInSearch: true,
@@ -121,6 +125,19 @@ const MailForwardPage = () => {
         reloadAllSalers();
         return getAllMailsByDispatcher(params);
       }}
+      toolBarRender={() => [
+        <Space key="default-cc">
+          默认抄送:
+          <Select
+            mode="tags"
+            options={options}
+            style={{ minWidth: 160 }}
+            placeholder="抄送"
+            value={defaultCcAddresses}
+            onChange={(v) => setDefaultCcAddresses(v)}
+          />
+        </Space>,
+      ]}
     />
   );
 };

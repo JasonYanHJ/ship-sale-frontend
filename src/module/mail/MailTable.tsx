@@ -1,4 +1,8 @@
-import { ProColumns, ProTable } from "@ant-design/pro-components";
+import {
+  ProColumns,
+  ProTable,
+  ProTableProps,
+} from "@ant-design/pro-components";
 import { MailRequestParams, MailResponse } from "./mailService";
 import { Attachment } from "./Attachment";
 import { useState } from "react";
@@ -162,12 +166,13 @@ function expandedRowRender(
 const MailTable = ({
   columns,
   mailRequest,
+  ...props
 }: {
   columns: ProColumns<MailTableDataSourceType>[];
   mailRequest: (
     params: MailRequestParams
   ) => Promise<ApiResponse<MailResponse>>;
-}) => {
+} & ProTableProps<MailTableDataSourceType, MailRequestParams>) => {
   const { width: containerWidth } = useResizeObserver<HTMLDivElement>({
     ref: document.querySelector(
       ".mail-table .ant-table-container"
@@ -176,12 +181,11 @@ const MailTable = ({
   });
 
   return (
-    <ProTable<MailTableDataSourceType>
+    <ProTable<MailTableDataSourceType, MailRequestParams>
       className="mail-table"
       rowKey="id"
       columns={columns}
-      request={async (_params) => {
-        const params = _params as MailRequestParams;
+      request={async (params) => {
         const response = (await mailRequest(params)).data;
         return { data: response.data, total: response.total, success: true };
       }}
@@ -190,6 +194,7 @@ const MailTable = ({
           expandedRowRender(record, containerWidth),
       }}
       bordered
+      {...props}
     />
   );
 };
