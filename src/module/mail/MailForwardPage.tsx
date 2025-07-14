@@ -8,6 +8,7 @@ import MailTable, { MailTableDataSourceType } from "./MailTable";
 import { RFQ_DISPLAY_COLOR } from "./Email";
 import { getAllMailsByDispatcher } from "./mailService";
 import useSalerSelectOptions from "./useSalerSelectOptions";
+import useDefaultCcAddresses from "./useDefaultCcAddresses";
 
 const MailForwardPage = () => {
   const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
@@ -18,7 +19,7 @@ const MailForwardPage = () => {
     reloadAllSalers();
   }, [reloadAllSalers]);
   const { options } = useSalerSelectOptions(allSalers);
-  const [defaultCcAddresses, setDefaultCcAddresses] = useState<string[]>([]);
+  const { defaultCcAddresses, setDefaultCcAddresses } = useDefaultCcAddresses();
 
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
