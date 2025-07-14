@@ -1,11 +1,12 @@
 import { Button, Flex, message, Select, Space } from "antd";
 import { SalerWithTags } from "../saler/Saler";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { mailApiRequest } from "../../service/api-request/apiRequest";
 import { Forward } from "./Forward";
 import useAuth from "../auth/useAuth";
 import { User } from "../auth/User";
 import useSalerSelectOptions from "./useSalerSelectOptions";
+import { difference, union } from "lodash";
 
 function SelectForwardToSaler({
   salers,
@@ -24,25 +25,43 @@ function SelectForwardToSaler({
   const [loading, setLoading] = useState(false);
   const [reforwarding, setReforwarding] = useState(false);
 
-  const [toAddresses, setToAddresses] = useState<string[] | undefined>(
-    forward?.to_addresses
+  const [toAddresses, setToAddresses] = useState<string[]>(
+    forward?.to_addresses ?? []
   );
   const [forwaded, setForwaded] = useState<string[] | undefined>(
     forward?.to_addresses
   );
 
-  const [ccAddresses, setCcAddresses] = useState<string[] | undefined | null>(
-    forward?.cc_addresses
+  const [ccAddresses, setCcAddresses] = useState<string[]>(
+    forward?.cc_addresses ?? []
   );
-  const [copied, setCopied] = useState<string[] | undefined | null>(
-    forward?.cc_addresses
-  );
+  const [copied, setCopied] = useState<string[]>(forward?.cc_addresses ?? []);
 
   // 没有转发记录时，抄送人受全局默认抄送人影响
   useEffect(() => {
     if (forwaded) return;
     setCcAddresses(defaultCcAddresses);
   }, [defaultCcAddresses, forwaded]);
+
+  // 当选择的收件人有组长时，自动将组长添加到抄送
+  const handleToAddressesChange = useCallback(
+    (v: string[]) => {
+      setToAddresses(v);
+
+      const added = difference(v, toAddresses);
+      const removed = difference(toAddresses, v);
+      const [leadersToAdd, leadersToRemove] = [added, removed].map((emails) =>
+        emails
+          .map((email) => salers.find((s) => s.email === email)!)
+          .filter((s) => s.leader)
+          .map((s) => s.leader!.email)
+      );
+      setCcAddresses((cc) =>
+        union(difference(cc, leadersToRemove), leadersToAdd)
+      );
+    },
+    [salers, toAddresses]
+  );
 
   const { options } = useSalerSelectOptions(salers);
 
@@ -74,7 +93,7 @@ function SelectForwardToSaler({
             .map((f) => salers.find((s) => s.email === f)?.name ?? f)
             .join(",")}
         </span>
-        {copied && (
+        {copied.length > 0 && (
           <span>
             抄送:
             {copied
@@ -95,7 +114,7 @@ function SelectForwardToSaler({
           mode="multiple"
           showSearch
           value={toAddresses}
-          onChange={(v) => setToAddresses(v)}
+          onChange={handleToAddressesChange}
           style={{ width: "100%", minWidth: 160 }}
           options={options}
         />
@@ -115,7 +134,7 @@ function SelectForwardToSaler({
           type="link"
           size="small"
           loading={loading}
-          disabled={!toAddresses || toAddresses.length === 0}
+          disabled={toAddresses.length === 0}
           onClick={handleForward}
         >
           转发

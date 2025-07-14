@@ -1,6 +1,6 @@
 import { Tag } from "../tag/Tag";
 
-export type Saler = {
+type BaseSaler = {
   id: number;
   name: string;
   email: string;
@@ -8,6 +8,10 @@ export type Saler = {
   created_at: string;
   updated_at: string;
 };
+
+export type Saler = {
+  leader: BaseSaler | null;
+} & BaseSaler;
 
 export type SalerWithTags = {
   tags: Tag[];
