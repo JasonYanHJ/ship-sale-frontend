@@ -19,6 +19,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^7.5.0",
     "styled-components": "^6.1.19",
+    "swr": "^2.3.4",
     "use-resize-observer": "^9.1.0"
   },
   "devDependencies": {

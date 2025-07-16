@@ -1,17 +1,21 @@
 import {
+  EditableProTable,
   ProColumns,
   ProTable,
   ProTableProps,
 } from "@ant-design/pro-components";
 import { MailRequestParams, MailResponse } from "./mailService";
 import { Attachment } from "./Attachment";
-import { useState } from "react";
-import { Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Space, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import replaceCidImages from "./replaceCidImages";
 import styled from "styled-components";
 import { ApiResponse } from "../../service/api-request/ApiResponse";
 import useResizeObserver from "use-resize-observer";
+import { getAllTags } from "../tag/tagService";
+import useSWR, { mutate } from "swr";
+import { apiRequest, withMessage } from "../../service/api-request/apiRequest";
 
 export type MailTableDataSourceType = MailResponse["data"][0];
 
@@ -80,26 +84,51 @@ const EmailContentDisplay: React.FC<{ record: MailTableDataSourceType }> = ({
   );
 };
 
-const StyledProTable = styled(ProTable<Attachment>)`
+type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
+const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
   .ant-table-container {
     overflow-x: hidden;
   }
 `;
 
-const ANTD_TABLE_CELL_PADDING = 8;
-const ANTD_TABLE_CELL_RIGHT_BORDER = 1;
-function expandedRowRender(
-  record: MailTableDataSourceType,
-  containerWidth: number | undefined
-) {
-  const datasource = record.attachments.filter(
-    (x) => x.content_disposition_type === "attachment"
+const AttachmentTable = ({ attachments }: { attachments: Attachment[] }) => {
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const { data: tags, mutate } = useSWR(
+    "/tags",
+    async () => (await getAllTags()).data
   );
+  const [datasource, setDatasource] = useState<
+    readonly AttachmentTableDatasource[]
+  >([]);
+  useEffect(() => {
+    setDatasource(
+      attachments
+        .filter((x) => x.content_disposition_type === "attachment")
+        .map((a) => ({ ...a, tags: a.tags.map((t) => t.name) }))
+    );
+  }, [attachments]);
 
-  const columns: ProColumns<Attachment>[] = [
+  const columns: ProColumns<AttachmentTableDatasource>[] = [
     {
       title: "附件名称",
       dataIndex: "original_filename",
+      editable: false,
+    },
+    {
+      title: "标签",
+      dataIndex: "tags",
+      valueType: "select",
+      render: (_dom, entity) => (
+        <Space wrap>
+          {entity.tags.map((t, i) => (
+            <Tag key={i}>{t}</Tag>
+          ))}
+        </Space>
+      ),
+      fieldProps: {
+        mode: "tags",
+        options: tags?.map((t) => ({ value: t.name, label: t.name })),
+      },
     },
     {
       title: "大小",
@@ -112,10 +141,12 @@ function expandedRowRender(
           ? `${(value / 1024).toFixed(2)}K`
           : `${(value / 1024 / 1024).toFixed(2)}M`;
       },
+      editable: false,
     },
     {
       title: "操作",
-      render: (_dom, entity) => [
+      valueType: "option",
+      render: (_dom, entity, _index, action) => [
         <a
           key="preview"
           href={`${
@@ -127,10 +158,59 @@ function expandedRowRender(
         >
           查看
         </a>,
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(entity.id);
+          }}
+        >
+          设置标签
+        </a>,
       ],
     },
   ];
+  return (
+    datasource.length > 0 && (
+      <div style={{ padding: "12px 48px 12px 0" }}>
+        <StyledProTable
+          rowKey="id"
+          size="small"
+          columns={columns}
+          headerTitle={false}
+          search={false}
+          options={false}
+          pagination={false}
+          value={datasource}
+          onChange={setDatasource}
+          bordered
+          recordCreatorProps={false}
+          editable={{
+            editableKeys,
+            onChange: setEditableRowKeys,
+            actionRender: (_row, _config, defaultDoms) => {
+              return [defaultDoms.save, defaultDoms.cancel];
+            },
+            onSave: async (rowKey, data) => {
+              await withMessage(
+                apiRequest(`/email-attachments/sync-tags/${rowKey}`, {
+                  tag_names: data.tags,
+                })
+              );
+              mutate();
+            },
+          }}
+        />
+      </div>
+    )
+  );
+};
 
+const ANTD_TABLE_CELL_PADDING = 8;
+const ANTD_TABLE_CELL_RIGHT_BORDER = 1;
+function expandedRowRender(
+  record: MailTableDataSourceType,
+  containerWidth: number | undefined
+) {
   return (
     <div
       style={{
@@ -143,21 +223,7 @@ function expandedRowRender(
         left: ANTD_TABLE_CELL_PADDING,
       }}
     >
-      {datasource.length !== 0 && (
-        <div style={{ padding: "12px 48px 12px 0" }}>
-          <StyledProTable
-            rowKey="id"
-            size="small"
-            columns={columns}
-            headerTitle={false}
-            search={false}
-            options={false}
-            pagination={false}
-            dataSource={datasource}
-            bordered
-          />
-        </div>
-      )}
+      <AttachmentTable attachments={record.attachments} />
       <EmailContentDisplay record={record} />
     </div>
   );
@@ -186,6 +252,7 @@ const MailTable = ({
       rowKey="id"
       columns={columns}
       request={async (params) => {
+        mutate("/tags");
         const response = (await mailRequest(params)).data;
         return { data: response.data, total: response.total, success: true };
       }}
