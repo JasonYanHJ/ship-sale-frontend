@@ -147,6 +147,7 @@ const SalerManagementPage = () => {
             email: "abc@example.com",
             description: "",
             tag_names: [],
+            leader: null,
           }),
         }}
         bordered
