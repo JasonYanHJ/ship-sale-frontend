@@ -1,0 +1,131 @@
+import { EditableProTable, ProColumns } from "@ant-design/pro-components";
+import { Space, Tag } from "antd";
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import useSWR from "swr";
+import { withMessage, apiRequest } from "../../service/api-request/apiRequest";
+import { getAllTags } from "../tag/tagService";
+import { Attachment } from "./Attachment";
+
+type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
+const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
+  .ant-table-container {
+    overflow-x: hidden;
+  }
+`;
+
+const AttachmentTable = ({ attachments }: { attachments: Attachment[] }) => {
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const { data: tags, mutate } = useSWR(
+    "/tags",
+    async () => (await getAllTags()).data
+  );
+  const [datasource, setDatasource] = useState<
+    readonly AttachmentTableDatasource[]
+  >([]);
+  useEffect(() => {
+    setDatasource(
+      attachments
+        .filter((x) => x.content_disposition_type === "attachment")
+        .map((a) => ({ ...a, tags: a.tags.map((t) => t.name) }))
+    );
+  }, [attachments]);
+
+  const columns: ProColumns<AttachmentTableDatasource>[] = [
+    {
+      title: "附件名称",
+      dataIndex: "original_filename",
+      editable: false,
+    },
+    {
+      title: "标签",
+      dataIndex: "tags",
+      valueType: "select",
+      render: (_dom, entity) => (
+        <Space wrap>
+          {entity.tags.map((t, i) => (
+            <Tag key={i}>{t}</Tag>
+          ))}
+        </Space>
+      ),
+      fieldProps: {
+        mode: "tags",
+        options: tags?.map((t) => ({ value: t.name, label: t.name })),
+      },
+    },
+    {
+      title: "大小",
+      dataIndex: "file_size",
+      render: (value) => {
+        if (typeof value !== "number") return "未知";
+        return value < 1024
+          ? `${value}B`
+          : value < 1024 * 1024
+          ? `${(value / 1024).toFixed(2)}K`
+          : `${(value / 1024 / 1024).toFixed(2)}M`;
+      },
+      editable: false,
+    },
+    {
+      title: "操作",
+      valueType: "option",
+      render: (_dom, entity, _index, action) => [
+        <a
+          key="preview"
+          href={`${
+            window.location.href.startsWith("http://localhost")
+              ? "http://127.0.0.1:8000/api"
+              : "http://192.168.100.246:8000/api"
+          }/email-attachments/${entity.id}`}
+          target="_blank"
+        >
+          查看
+        </a>,
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(entity.id);
+          }}
+        >
+          设置标签
+        </a>,
+      ],
+    },
+  ];
+  return (
+    datasource.length > 0 && (
+      <div style={{ padding: "12px 48px 12px 0" }}>
+        <StyledProTable
+          rowKey="id"
+          size="small"
+          columns={columns}
+          headerTitle={false}
+          search={false}
+          options={false}
+          pagination={false}
+          value={datasource}
+          onChange={setDatasource}
+          bordered
+          recordCreatorProps={false}
+          editable={{
+            editableKeys,
+            onChange: setEditableRowKeys,
+            actionRender: (_row, _config, defaultDoms) => {
+              return [defaultDoms.save, defaultDoms.cancel];
+            },
+            onSave: async (rowKey, data) => {
+              await withMessage(
+                apiRequest(`/email-attachments/sync-tags/${rowKey}`, {
+                  tag_names: data.tags,
+                })
+              );
+              mutate();
+            },
+          }}
+        />
+      </div>
+    )
+  );
+};
+
+export default AttachmentTable;
