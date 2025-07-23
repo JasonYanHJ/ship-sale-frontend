@@ -5,14 +5,32 @@ import styled from "styled-components";
 import useSWR from "swr";
 import { withMessage, apiRequest } from "../../service/api-request/apiRequest";
 import { getAllTags } from "../tag/tagService";
-import { Attachment } from "./Attachment";
+import { Attachment, ShipServExtra } from "./Attachment";
+import ShipServExtraDescription from "./attachment-extra/shipserv/ShipServExtraDescription";
+import ShipServExtraTable from "./attachment-extra/shipserv/ShipServExtraTable";
 
 type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
 const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
   .ant-table-container {
     overflow-x: hidden;
+    table {
+      max-width: 100%;
+    }
   }
 `;
+
+function expandedRowRender(record: AttachmentTableDatasource) {
+  return (
+    <div>
+      {record.extra?.type === "ShipServ" && (
+        <>
+          <ShipServExtraDescription extra={record.extra as ShipServExtra} />
+          <ShipServExtraTable extra={record.extra as ShipServExtra} />
+        </>
+      )}
+    </div>
+  );
+}
 
 const AttachmentTable = ({ attachments }: { attachments: Attachment[] }) => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
@@ -121,6 +139,11 @@ const AttachmentTable = ({ attachments }: { attachments: Attachment[] }) => {
               );
               mutate();
             },
+          }}
+          expandable={{
+            defaultExpandAllRows: true,
+            rowExpandable: (record) => !!record.extra,
+            expandedRowRender: (record) => expandedRowRender(record),
           }}
         />
       </div>

@@ -10,4 +10,18 @@ export type Attachment = {
   content_type: string;
   content_disposition_type: string;
   tags: Tag[];
+  extra: BaseExtra | null;
+};
+
+export type BaseExtra = {
+  type: string;
+  version: number;
+};
+
+export type ShipServExtra = BaseExtra & {
+  type: "ShipServ";
+  version: 1;
+  table_data: (string | null)[][];
+  section_data: Record<string, string>[];
+  meta_data: Record<string, string>;
 };
