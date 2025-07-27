@@ -1,23 +1,27 @@
-import { Button, Flex, message, Select, Space } from "antd";
+import { Button, Flex, message, Select, Space, Tag, Tooltip } from "antd";
 import { SalerWithTags } from "../saler/Saler";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { mailApiRequest } from "../../service/api-request/apiRequest";
 import { Forward } from "./Forward";
 import useAuth from "../auth/useAuth";
 import { User } from "../auth/User";
 import useSalerSelectOptions from "./useSalerSelectOptions";
 import { difference, union } from "lodash";
+import { MailTableDataSourceType } from "./MailTable";
+import calculateRecomendedSalers from "./calculateRecomendedSalers";
 
 function SelectForwardToSaler({
   salers,
   forward,
   emailId,
   defaultCcAddresses,
+  email,
 }: {
   salers: SalerWithTags[];
   forward: Forward | undefined;
   emailId: number;
   defaultCcAddresses: string[];
+  email: MailTableDataSourceType;
 }) {
   const auth = useAuth();
   const user = auth.user as User;
@@ -63,7 +67,67 @@ function SelectForwardToSaler({
     [salers, toAddresses]
   );
 
-  const { options } = useSalerSelectOptions(salers);
+  const recomendedSalers = useMemo(
+    () => calculateRecomendedSalers(email, salers),
+    [email, salers]
+  );
+  const otherSalers = salers.filter((s) =>
+    recomendedSalers.every((rs) => rs.id !== s.id)
+  );
+
+  const recomendedSalerOptions = useMemo(
+    () =>
+      recomendedSalers.map((s) => ({
+        label: (
+          <Tooltip
+            title={
+              <Flex vertical gap={12} style={{ padding: 12, color: "black" }}>
+                <div>{s.email}</div>
+                <Space wrap>
+                  {s.tags.map((t) => (
+                    <Tag
+                      key={t.id}
+                      color={
+                        s.matchedTags.some((mt) => mt.id === t.id)
+                          ? "blue"
+                          : undefined
+                      }
+                      style={{ marginInlineEnd: 0 }}
+                    >
+                      {t.name}
+                    </Tag>
+                  ))}
+                </Space>
+                {s.description && (
+                  <div style={{ color: "grey" }}>{s.description}</div>
+                )}
+              </Flex>
+            }
+            color="white"
+            placement="left"
+          >
+            <div>{s.name}</div>
+          </Tooltip>
+        ),
+        value: s.email,
+      })),
+    [recomendedSalers]
+  );
+  const { options: otherSalerOptions } = useSalerSelectOptions(otherSalers);
+
+  const options = useMemo(
+    () => [
+      {
+        label: "系统推荐",
+        options: recomendedSalerOptions,
+      },
+      {
+        label: "其他",
+        options: otherSalerOptions,
+      },
+    ],
+    [otherSalerOptions, recomendedSalerOptions]
+  );
 
   const handleForward = () => {
     setLoading(true);

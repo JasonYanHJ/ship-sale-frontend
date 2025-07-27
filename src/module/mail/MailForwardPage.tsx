@@ -113,6 +113,7 @@ const MailForwardPage = () => {
             emailId={entity.id}
             forward={entity.forwards[0]}
             defaultCcAddresses={defaultCcAddresses}
+            email={entity}
           />
         ),
       hideInSearch: true,
