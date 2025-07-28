@@ -54,7 +54,15 @@ const MailForwardPage = () => {
       dataIndex: "subject",
       minWidth: 300,
       render: (subject) => (
-        <div style={{ wordBreak: "break-all" }}>{subject}</div>
+        <div
+          style={{
+            wordBreak: "break-all",
+            color: "#255999",
+            fontWeight: "bold",
+          }}
+        >
+          {subject}
+        </div>
       ),
     },
     {

@@ -9,8 +9,19 @@ import useResizeObserver from "use-resize-observer";
 import { mutate } from "swr";
 import MailContentDisplay from "./MailContentDisplay";
 import AttachmentTable from "./AttachmentTable";
+import styled from "styled-components";
 
 export type MailTableDataSourceType = MailResponse["data"][0];
+
+const StyledTable = styled(
+  ProTable<MailTableDataSourceType, MailRequestParams>
+)`
+  .ant-table-cell:not(.ant-table-expanded-row .ant-table-cell):not(
+      thead .ant-table-cell
+    ) {
+    background-color: #e9f4fe;
+  }
+`;
 
 const ANTD_TABLE_CELL_PADDING = 8;
 const ANTD_TABLE_CELL_RIGHT_BORDER = 1;
@@ -54,7 +65,7 @@ const MailTable = ({
   });
 
   return (
-    <ProTable<MailTableDataSourceType, MailRequestParams>
+    <StyledTable
       className="mail-table"
       rowKey="id"
       columns={columns}
