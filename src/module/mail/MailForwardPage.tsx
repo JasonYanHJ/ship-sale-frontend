@@ -21,6 +21,11 @@ const MailForwardPage = () => {
   const { options } = useSalerSelectOptions(allSalers);
   const { defaultCcAddresses, setDefaultCcAddresses } = useDefaultCcAddresses();
 
+  const [remountKey, setRemountKey] = useState(0);
+  const remount = useCallback(() => {
+    setRemountKey((key) => key + 1);
+  }, []);
+
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
       title: "类型",
@@ -108,7 +113,7 @@ const MailForwardPage = () => {
       render: (_dom, entity) =>
         allSalers && (
           <SelectForwardToSaler
-            key={`${entity.id}-${entity.forwards[0]?.id ?? null}`}
+            key={`${remountKey}-${entity.id}-${entity.forwards[0]?.id ?? null}`}
             salers={allSalers}
             emailId={entity.id}
             forward={entity.forwards[0]}
@@ -120,12 +125,18 @@ const MailForwardPage = () => {
       fixed: "right",
     },
   ];
+
   return (
     <MailTable
       columns={columns}
-      mailRequest={(params) => {
-        reloadAllSalers();
-        return getAllMailsByDispatcher(params);
+      mailRequest={async (params) => {
+        const result = await getAllMailsByDispatcher(params);
+        await reloadAllSalers();
+
+        // 等待数据刷新完成后，再重新挂载SelectForwardToSaler组件
+        remount();
+
+        return result;
       }}
       toolBarRender={() => [
         <Space key="default-cc">
