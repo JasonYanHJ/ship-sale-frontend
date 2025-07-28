@@ -62,7 +62,7 @@ const SalerManagementPage = () => {
       title: "标签",
       dataIndex: "tag_names",
       valueType: "select",
-      width: "25%",
+      width: "35%",
       fieldProps: () => ({
         mode: "tags",
         loading: allTags === null,
@@ -81,7 +81,7 @@ const SalerManagementPage = () => {
       title: "职责描述",
       dataIndex: "description",
       valueType: "textarea",
-      width: "25%",
+      width: "15%",
       render: (_, entity) => (
         <Typography.Paragraph
           style={{ marginBottom: 0 }}
