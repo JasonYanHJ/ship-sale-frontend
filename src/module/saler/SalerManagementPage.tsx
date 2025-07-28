@@ -1,9 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  ActionType,
-  EditableProTable,
-  ProColumns,
-} from "@ant-design/pro-components";
+import { useCallback, useEffect, useState } from "react";
+import { EditableProTable, ProColumns } from "@ant-design/pro-components";
 import {
   deleteSaler,
   getAllSalers,
@@ -11,7 +7,7 @@ import {
   updateSaler,
 } from "./salerService";
 import { withMessage } from "../../service/api-request/apiRequest";
-import { Saler } from "./Saler";
+import { Saler, SalerWithTags } from "./Saler";
 import { Popconfirm, Space, Tag, Typography } from "antd";
 import { getAllTags } from "../tag/tagService";
 import "./SalerManagementPage.css";
@@ -22,7 +18,14 @@ type DataSourceType = Omit<Saler, "created_at" | "updated_at"> & {
 
 const SalerManagementPage = () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const actionRef = useRef<ActionType>();
+
+  const [allSalers, setAllSalers] = useState<SalerWithTags[] | null>(null);
+  const reloadAllSalers = useCallback(async () => {
+    setAllSalers((await getAllSalers()).data);
+  }, []);
+  useEffect(() => {
+    reloadAllSalers();
+  }, [reloadAllSalers]);
 
   const [allTags, setAllTags] = useState<string[] | null>(null);
   const reloadAllTags = async () => {
@@ -42,6 +45,18 @@ const SalerManagementPage = () => {
     {
       title: "邮箱",
       dataIndex: "email",
+    },
+    {
+      title: "组长",
+      dataIndex: "leader_id",
+      valueType: "select",
+      fieldProps: {
+        showSearch: true,
+        options: allSalers?.map((s) => ({
+          label: s.name,
+          value: s.id,
+        })),
+      },
     },
     {
       title: "标签",
@@ -93,7 +108,7 @@ const SalerManagementPage = () => {
           key="delete"
           title="确认删除？"
           onConfirm={() => {
-            withMessage(deleteSaler(record.id)).then(() => action?.reload?.());
+            withMessage(deleteSaler(record.id)).then(() => reloadAllSalers());
           }}
         >
           <a>删除</a>
@@ -108,31 +123,37 @@ const SalerManagementPage = () => {
         tableClassName="saler-management-table"
         rowKey="id"
         columns={columns}
-        actionRef={actionRef}
-        request={async () => {
-          const salers = (await getAllSalers()).data.map((saler) => ({
-            ...saler,
-            tag_names: saler.tags.map((tag) => tag.name),
-          }));
-          return { data: salers, total: salers.length, success: true };
-        }}
+        value={allSalers?.map((saler) => ({
+          ...saler,
+          tag_names: saler.tags.map((tag) => tag.name),
+        }))}
         editable={{
           type: "single",
           editableKeys,
-          onSave: async (rowKey, data) =>
-            (rowKey as number) < 0
-              ? withMessage(storeSaler(data)).then(() =>
+          onSave: async (rowKey, data) => {
+            // leader_id清除时，默认会将key删除
+            // 保留key，并设置value为null，显示指明删除leader_id
+            const processedData = {
+              ...data,
+              leader_id: data.leader_id ?? null,
+            };
+
+            if ((rowKey as number) < 0)
+              withMessage(storeSaler(processedData)).then(() =>
+                setTimeout(() => {
+                  reloadAllSalers();
+                  reloadAllTags();
+                })
+              );
+            else
+              withMessage(updateSaler(rowKey as number, processedData)).then(
+                () =>
                   setTimeout(() => {
-                    actionRef.current?.reload();
+                    reloadAllSalers();
                     reloadAllTags();
                   })
-                )
-              : withMessage(updateSaler(rowKey as number, data)).then(() =>
-                  setTimeout(() => {
-                    actionRef.current?.reload();
-                    reloadAllTags();
-                  })
-                ),
+              );
+          },
           onChange: setEditableRowKeys,
           actionRender: (_row, _config, defaultDoms) => {
             return [defaultDoms.save, defaultDoms.cancel];
@@ -148,6 +169,7 @@ const SalerManagementPage = () => {
             description: "",
             tag_names: [],
             leader: null,
+            leader_id: null,
           }),
         }}
         bordered
