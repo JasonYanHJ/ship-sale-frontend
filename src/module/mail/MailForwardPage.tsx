@@ -147,7 +147,7 @@ const MailForwardPage = () => {
         return result;
       }}
       toolBarRender={() => [
-        <Space key="default-cc">
+        <Space key="default-cc" style={{ marginInlineEnd: 16 }}>
           默认抄送:
           <Select
             mode="tags"
