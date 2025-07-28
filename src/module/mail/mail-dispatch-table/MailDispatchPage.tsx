@@ -1,11 +1,13 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { Space, Tag } from "antd";
-import MailTable, { MailTableDataSourceType } from "./MailTable";
-import { RFQ_DISPLAY_COLOR } from "./Email";
-import { getAllMails } from "./mailService";
+import MailTable, {
+  MailTableDataSourceType,
+} from "../mail-base-table/MailTable";
+import { RFQ_DISPLAY_COLOR } from "../type/Email";
+import { getAllMails } from "../mailService";
 import { useCallback, useEffect, useState } from "react";
-import { User } from "../auth/User";
-import { apiRequest } from "../../service/api-request/apiRequest";
+import { User } from "../../auth/User";
+import { apiRequest } from "../../../service/api-request/apiRequest";
 import SelectDispatcher from "./SelectDispatcher";
 
 const MailDispatchPage = () => {

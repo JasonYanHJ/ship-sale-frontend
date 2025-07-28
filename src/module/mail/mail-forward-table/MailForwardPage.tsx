@@ -1,12 +1,14 @@
 import { ProColumns } from "@ant-design/pro-components";
 import { useCallback, useEffect, useState } from "react";
 import { Select, Space, Tag } from "antd";
-import { SalerWithTags } from "../saler/Saler";
-import { getAllSalers } from "../saler/salerService";
+import { SalerWithTags } from "../../saler/Saler";
+import { getAllSalers } from "../../saler/salerService";
 import SelectForwardToSaler from "./SelectForwardToSaler";
-import MailTable, { MailTableDataSourceType } from "./MailTable";
-import { RFQ_DISPLAY_COLOR } from "./Email";
-import { getAllMailsByDispatcher } from "./mailService";
+import MailTable, {
+  MailTableDataSourceType,
+} from "../mail-base-table/MailTable";
+import { RFQ_DISPLAY_COLOR } from "../type/Email";
+import { getAllMailsByDispatcher } from "../mailService";
 import useSalerSelectOptions from "./useSalerSelectOptions";
 import useDefaultCcAddresses from "./useDefaultCcAddresses";
 

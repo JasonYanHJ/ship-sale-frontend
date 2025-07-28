@@ -1,5 +1,5 @@
 import { Descriptions, DescriptionsProps } from "antd";
-import { ShipServExtra } from "../../Attachment";
+import { ShipServExtra } from "../../../type/Attachment";
 
 const ShipServExtraDescription = ({ extra }: { extra: ShipServExtra }) => {
   const metaItems: DescriptionsProps["items"] = Object.entries(

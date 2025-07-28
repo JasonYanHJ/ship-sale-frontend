@@ -1,5 +1,5 @@
 import { Table, TableProps } from "antd";
-import { ShipServExtra } from "../../Attachment";
+import { ShipServExtra } from "../../../type/Attachment";
 import styled from "styled-components";
 import { AnyObject } from "antd/es/_util/type";
 

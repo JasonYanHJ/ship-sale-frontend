@@ -1,13 +1,13 @@
 import { Button, Flex, message, Select, Space, Tag, Tooltip } from "antd";
-import { SalerWithTags } from "../saler/Saler";
+import { SalerWithTags } from "../../saler/Saler";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { mailApiRequest } from "../../service/api-request/apiRequest";
-import { Forward } from "./Forward";
-import useAuth from "../auth/useAuth";
-import { User } from "../auth/User";
+import { mailApiRequest } from "../../../service/api-request/apiRequest";
+import { Forward } from "../type/Forward";
+import useAuth from "../../auth/useAuth";
+import { User } from "../../auth/User";
 import useSalerSelectOptions from "./useSalerSelectOptions";
 import { difference, union } from "lodash";
-import { MailTableDataSourceType } from "./MailTable";
+import { MailTableDataSourceType } from "../mail-base-table/MailTable";
 import calculateRecomendedSalers from "./calculateRecomendedSalers";
 
 function SelectForwardToSaler({

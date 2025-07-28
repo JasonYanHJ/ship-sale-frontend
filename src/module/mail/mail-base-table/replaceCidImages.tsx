@@ -1,4 +1,4 @@
-import { API_PREFIX } from "../../service/api-request/apiRequest";
+import { API_PREFIX } from "../../../service/api-request/apiRequest";
 
 export default function replaceCidImages(htmlContent: string) {
   return htmlContent.replace(/src="cid:([^"]+)"/g, (_match, cid) => {

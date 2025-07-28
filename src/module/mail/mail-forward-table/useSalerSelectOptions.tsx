@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { SalerWithTags } from "../saler/Saler";
+import { SalerWithTags } from "../../saler/Saler";
 import { Flex, Space, Tag, Tooltip } from "antd";
 
 export default function useSalerSelectOptions(salers: SalerWithTags[] | null) {

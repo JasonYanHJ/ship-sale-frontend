@@ -1,4 +1,4 @@
-import { Tag } from "../tag/Tag";
+import { Tag } from "../../tag/Tag";
 
 export type Attachment = {
   id: number;

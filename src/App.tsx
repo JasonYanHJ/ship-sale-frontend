@@ -13,10 +13,10 @@ import {
 import PageNotFound from "./module/layout/PageNotFound";
 import TagManagementPage from "./module/tag/TagManagementPage";
 import SalerManagementPage from "./module/saler/SalerManagementPage";
-import MailForwardPage from "./module/mail/MailForwardPage";
+import MailForwardPage from "./module/mail/mail-forward-table/MailForwardPage";
 import { AuthProvider } from "./module/auth/useAuth";
 import LoginAndRegisterForm from "./module/auth/LoginAndRegister";
-import MailDispatchPage from "./module/mail/MailDispatchPage";
+import MailDispatchPage from "./module/mail/mail-dispatch-table/MailDispatchPage";
 
 dayjs.locale("zh-cn");
 

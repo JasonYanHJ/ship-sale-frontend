@@ -3,8 +3,8 @@ import {
   ProTable,
   ProTableProps,
 } from "@ant-design/pro-components";
-import { MailRequestParams, MailResponse } from "./mailService";
-import { ApiResponse } from "../../service/api-request/ApiResponse";
+import { MailRequestParams, MailResponse } from "../mailService";
+import { ApiResponse } from "../../../service/api-request/ApiResponse";
 import useResizeObserver from "use-resize-observer";
 import { mutate } from "swr";
 import MailContentDisplay from "./MailContentDisplay";

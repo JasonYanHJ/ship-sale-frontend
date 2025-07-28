@@ -1,5 +1,5 @@
 import { apiRequest } from "../../service/api-request/apiRequest";
-import { Email, WithAttachments, WithForwards } from "./Email";
+import { Email, WithAttachments, WithForwards } from "./type/Email";
 
 export type MailRequestParams = {
   current: number;

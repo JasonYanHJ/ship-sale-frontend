@@ -1,7 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
-import { User } from "../auth/User";
+import { User } from "../../auth/User";
 import { Select } from "antd";
-import { apiRequest, withMessage } from "../../service/api-request/apiRequest";
+import {
+  apiRequest,
+  withMessage,
+} from "../../../service/api-request/apiRequest";
 
 function SelectDispatcher({
   dispatchers,

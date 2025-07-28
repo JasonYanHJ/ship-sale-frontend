@@ -1,7 +1,7 @@
-import { SalerWithTags } from "../saler/Saler";
-import { Tag } from "../tag/Tag";
-import { ShipServExtra } from "./Attachment";
-import { Email, WithAttachments } from "./Email";
+import { SalerWithTags } from "../../saler/Saler";
+import { Tag } from "../../tag/Tag";
+import { ShipServExtra } from "../type/Attachment";
+import { Email, WithAttachments } from "../type/Email";
 
 function calculateRecomendedSalers(
   email: WithAttachments<Email>,

@@ -3,9 +3,12 @@ import { Space, Tag } from "antd";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
-import { withMessage, apiRequest } from "../../service/api-request/apiRequest";
-import { getAllTags } from "../tag/tagService";
-import { Attachment, ShipServExtra } from "./Attachment";
+import {
+  withMessage,
+  apiRequest,
+} from "../../../service/api-request/apiRequest";
+import { getAllTags } from "../../tag/tagService";
+import { Attachment, ShipServExtra } from "../type/Attachment";
 import ShipServExtraDescription from "./attachment-extra/shipserv/ShipServExtraDescription";
 import ShipServExtraTable from "./attachment-extra/shipserv/ShipServExtraTable";
 
