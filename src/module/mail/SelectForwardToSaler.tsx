@@ -132,6 +132,18 @@ function SelectForwardToSaler({
     [otherSalerOptions, recomendedSalerOptions]
   );
 
+  // 初始化时，收件人自动填充系统推荐的销售人员并抄送对应的组长
+  useEffect(() => {
+    if (toAddresses.length !== 0) return;
+
+    const emails = recomendedSalers.map((s) => s.email);
+    setToAddresses(emails);
+    handleToAddressesChange(emails);
+
+    // 只有初始化时执行
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleForward = () => {
     setLoading(true);
     mailApiRequest(`/emails/${emailId}/forward`, {
