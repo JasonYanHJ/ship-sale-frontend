@@ -19,7 +19,7 @@ const MailForwardPage = () => {
     reloadAllSalers();
   }, [reloadAllSalers]);
   const { options } = useSalerSelectOptions(allSalers);
-  const { defaultCcAddresses, setDefaultCcAddresses } = useDefaultCcAddresses();
+  const [defaultCcAddresses, setDefaultCcAddresses] = useDefaultCcAddresses();
 
   const [remountKey, setRemountKey] = useState(0);
   const remount = useCallback(() => {
