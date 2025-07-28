@@ -83,6 +83,9 @@ function SelectForwardToSaler({
             title={
               <Flex vertical gap={12} style={{ padding: 12, color: "black" }}>
                 <div>{s.email}</div>
+                <div style={{ color: "grey" }}>
+                  组长: {s.leader?.name ?? "-"}
+                </div>
                 <Space wrap>
                   {s.tags.map((t) => (
                     <Tag

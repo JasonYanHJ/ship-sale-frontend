@@ -16,6 +16,9 @@ export default function useSalerSelectOptions(salers: SalerWithTags[] | null) {
                     style={{ padding: 12, color: "black" }}
                   >
                     <div>{s.email}</div>
+                    <div style={{ color: "grey" }}>
+                      组长: {s.leader?.name ?? "-"}
+                    </div>
                     <Space wrap>
                       {s.tags.map((t) => (
                         <Tag key={t.id} style={{ marginInlineEnd: 0 }}>
