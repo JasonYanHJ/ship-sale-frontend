@@ -21,7 +21,7 @@ export type BaseExtra = {
 export type ShipServExtra = BaseExtra & {
   type: "ShipServ";
   version: 1;
-  table_data: (string | null)[][];
+  table_data: (string | null)[][][];
   section_data: Record<string, string>[];
   meta_data: Record<string, string>;
 };

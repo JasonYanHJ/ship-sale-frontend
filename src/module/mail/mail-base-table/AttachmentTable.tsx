@@ -10,7 +10,7 @@ import {
 import { getAllTags } from "../../tag/tagService";
 import { Attachment, ShipServExtra } from "../type/Attachment";
 import ShipServExtraDescription from "./attachment-extra/shipserv/ShipServExtraDescription";
-import ShipServExtraTable from "./attachment-extra/shipserv/ShipServExtraTable";
+import ShipServExtraTables from "./attachment-extra/shipserv/ShipServExtraTables";
 
 type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
 const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
@@ -28,7 +28,7 @@ function expandedRowRender(record: AttachmentTableDatasource) {
       {record.extra?.type === "ShipServ" && (
         <>
           <ShipServExtraDescription extra={record.extra as ShipServExtra} />
-          <ShipServExtraTable extra={record.extra as ShipServExtra} />
+          <ShipServExtraTables extra={record.extra as ShipServExtra} />
         </>
       )}
     </div>
