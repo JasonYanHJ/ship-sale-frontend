@@ -32,6 +32,14 @@ const ShipServExtraTable = ({ table }: { table: (string | null)[][] }) => {
     onCell: (record) => ({
       colSpan: calculateColSpan(record as string[], index),
     }),
+    render: (value) => {
+      if (typeof value !== "string") return value;
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: value.replace("\n", "<br/>") }}
+        />
+      );
+    },
   }));
 
   return (
