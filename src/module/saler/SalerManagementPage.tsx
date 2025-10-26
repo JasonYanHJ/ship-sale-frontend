@@ -47,6 +47,10 @@ const SalerManagementPage = () => {
       dataIndex: "email",
     },
     {
+      title: "名称缩写",
+      dataIndex: "abbr",
+    },
+    {
       title: "组长",
       dataIndex: "leader_id",
       valueType: "select",
@@ -170,6 +174,7 @@ const SalerManagementPage = () => {
             tag_names: [],
             leader: null,
             leader_id: null,
+            abbr: null,
           }),
         }}
         bordered

@@ -5,16 +5,11 @@ export async function getAllSalers() {
   return apiRequest<SalerWithTags[]>("/salers");
 }
 
-export async function updateSaler(
-  id: number,
-  fields: Pick<Saler, "name" | "email" | "description">
-) {
+export async function updateSaler(id: number, fields: Partial<Saler>) {
   return apiRequest<SalerWithTags>(`/salers/update/${id}`, fields);
 }
 
-export async function storeSaler(
-  fields: Pick<Saler, "name" | "email" | "description">
-) {
+export async function storeSaler(fields: Partial<Saler>) {
   return apiRequest<SalerWithTags>("/salers/store/", fields);
 }
 

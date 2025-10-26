@@ -8,6 +8,7 @@ type BaseSaler = {
   description: string | null;
   created_at: string;
   updated_at: string;
+  abbr: string | null;
 };
 
 export type Saler = {
