@@ -6,7 +6,7 @@ export type MailRequestParams = {
   pageSize: number;
   date_sent?: string;
   type?: string | null;
-  from?: string | null;
+  from_system?: string | null;
   dispatched?: boolean;
   subject?: string;
   sender?: string;
@@ -21,7 +21,7 @@ function processParams(params: MailRequestParams): MailRequestParams {
   const processedParams = {
     ...params,
     type: params.type === "NULL" ? null : params.type,
-    from: params.from === "NULL" ? null : params.from,
+    from_system: params.from_system === "NULL" ? null : params.from_system,
   };
 
   return processedParams;

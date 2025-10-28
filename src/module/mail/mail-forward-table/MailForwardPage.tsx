@@ -57,13 +57,15 @@ const MailForwardPage = () => {
       title: "系统",
       minWidth: 80,
       render(_dom, entity) {
-        return entity.from ? (
-          <Tag color={INFO_DISPLAY_COLOR[entity.from]}>{entity.from}</Tag>
+        return entity.from_system ? (
+          <Tag color={INFO_DISPLAY_COLOR[entity.from_system]}>
+            {entity.from_system}
+          </Tag>
         ) : (
           "-"
         );
       },
-      key: "from",
+      key: "from_system",
       valueType: "select",
       valueEnum: {
         ShipServ: "ShipServ",

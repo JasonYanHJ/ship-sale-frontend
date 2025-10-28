@@ -14,7 +14,7 @@ export type Email = {
   date_received: string;
   raw_headers: string;
   type: "ORDER" | "RFQ" | null;
-  from: "ShipServ" | null;
+  from_system: "ShipServ" | null;
   dispatcher_id: number | null;
 };
 

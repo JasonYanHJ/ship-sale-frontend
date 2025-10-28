@@ -9,7 +9,7 @@ function calculateRecomendedSalers(
 ): (SalerWithTags & { matchedTags: Tag[] })[] {
   if (email.type !== "RFQ") return [];
 
-  if (email.from === "ShipServ") {
+  if (email.from_system === "ShipServ") {
     const extraText = email.attachments
       .filter((m) => !!m.extra)
       .map((m) => m.extra as ShipServExtra)
