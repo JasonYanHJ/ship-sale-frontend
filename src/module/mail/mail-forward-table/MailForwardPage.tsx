@@ -7,7 +7,7 @@ import SelectForwardToSaler from "./SelectForwardToSaler";
 import MailTable, {
   MailTableDataSourceType,
 } from "../mail-base-table/MailTable";
-import { RFQ_DISPLAY_COLOR } from "../type/Email";
+import { INFO_DISPLAY_COLOR } from "../type/Email";
 import { getAllMailsByDispatcher } from "../mailService";
 import useSalerSelectOptions from "./useSalerSelectOptions";
 import useDefaultCcAddresses from "./useDefaultCcAddresses";
@@ -31,24 +31,43 @@ const MailForwardPage = () => {
   const columns: ProColumns<MailTableDataSourceType>[] = [
     {
       title: "类型",
-      minWidth: 80,
+      minWidth: 60,
       render(_dom, entity) {
-        const displayString = entity.rfq_type ?? (entity.rfq ? "询价" : "其他");
-        return (
-          <Tag color={RFQ_DISPLAY_COLOR[displayString]}>{displayString}</Tag>
+        const typeDisplay =
+          entity.type === "RFQ"
+            ? "询价"
+            : entity.type === "ORDER"
+            ? "订单"
+            : null;
+        return typeDisplay ? (
+          <Tag color={INFO_DISPLAY_COLOR[typeDisplay]}>{typeDisplay}</Tag>
+        ) : (
+          "-"
         );
       },
-      hideInSearch: true,
+      key: "type",
+      valueType: "select",
+      valueEnum: {
+        ORDER: "订单",
+        RFQ: "询价",
+        NULL: "其他",
+      },
     },
     {
-      title: "类型",
-      hideInTable: true,
-      key: "rfq_string",
+      title: "系统",
+      minWidth: 80,
+      render(_dom, entity) {
+        return entity.from ? (
+          <Tag color={INFO_DISPLAY_COLOR[entity.from]}>{entity.from}</Tag>
+        ) : (
+          "-"
+        );
+      },
+      key: "from",
       valueType: "select",
       valueEnum: {
         ShipServ: "ShipServ",
-        rfq: "询价",
-        no_rfq: "其他",
+        NULL: "其他",
       },
     },
     {

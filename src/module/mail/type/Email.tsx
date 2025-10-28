@@ -13,14 +13,15 @@ export type Email = {
   date_sent: string;
   date_received: string;
   raw_headers: string;
-  rfq: true | null;
-  rfq_type: string | null;
+  type: "ORDER" | "RFQ" | null;
+  from: "ShipServ" | null;
   dispatcher_id: number | null;
 };
 
-export const RFQ_DISPLAY_COLOR: { [key: string]: string } = {
+export const INFO_DISPLAY_COLOR: { [key: string]: string } = {
   ShipServ: "#69e4dd",
   询价: "blue",
+  订单: "gold",
 };
 
 export type WithAttachments<T> = T & {
