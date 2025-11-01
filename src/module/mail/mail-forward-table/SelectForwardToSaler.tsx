@@ -1,4 +1,13 @@
-import { Button, Flex, message, Select, Space, Tag, Tooltip } from "antd";
+import {
+  Button,
+  Dropdown,
+  Flex,
+  message,
+  Select,
+  Space,
+  Tag,
+  Tooltip,
+} from "antd";
 import { SalerWithTags } from "../../saler/Saler";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { mailApiRequest } from "../../../service/api-request/apiRequest";
@@ -9,6 +18,7 @@ import useSalerSelectOptions from "./useSalerSelectOptions";
 import { difference, union } from "lodash";
 import { MailTableDataSourceType } from "../mail-base-table/MailTable";
 import calculateRecomendedSalers from "./calculateRecomendedSalers";
+import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
 
 function SelectForwardToSaler({
   salers,
@@ -163,6 +173,32 @@ function SelectForwardToSaler({
       .finally(() => setLoading(false));
   };
 
+  const handleMoreAction = ({ key }: { key: string }) => {
+    switch (key) {
+      case "correct":
+        setLoading(true);
+        mailApiRequest(`/emails/${emailId}/forward-correct`, {
+          to_addresses: toAddresses,
+          cc_addresses: ccAddresses,
+          reply_to: [user.email],
+        })
+          .then(() => {
+            message.success("更正成功");
+            setForwaded(toAddresses);
+            setCopied(ccAddresses);
+            setReforwarding(false);
+          })
+          .catch(() => {
+            message.error("更正失败");
+          })
+          .finally(() => setLoading(false));
+        break;
+      case "message":
+        message.warning("功能开发中");
+        break;
+    }
+  };
+
   return forwaded && !reforwarding ? (
     <Flex align="center" justify="space-between" style={{ minWidth: 224 }}>
       <Space direction="vertical">
@@ -208,16 +244,30 @@ function SelectForwardToSaler({
         />
       </Space>
       <Space direction="vertical">
-        <Button
-          style={{ width: "4rem" }}
+        <Dropdown.Button
+          menu={{
+            items: [
+              {
+                label: "添加额外文本信息，再转发",
+                key: "message",
+                icon: <FormOutlined />,
+              },
+              {
+                label: "仅更正记录，不实际转发",
+                key: "correct",
+                icon: <CarryOutOutlined />,
+              },
+            ],
+            onClick: handleMoreAction,
+          }}
           type="link"
           size="small"
           loading={loading}
-          disabled={toAddresses.length === 0}
+          disabled={toAddresses.length === 0 || loading}
           onClick={handleForward}
         >
           转发
-        </Button>
+        </Dropdown.Button>
         {forwaded && (
           <Button
             style={{ width: "4rem" }}
