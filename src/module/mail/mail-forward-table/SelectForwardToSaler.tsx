@@ -18,7 +18,7 @@ import useSalerSelectOptions from "./useSalerSelectOptions";
 import { difference, union } from "lodash";
 import { MailTableDataSourceType } from "../mail-base-table/MailTable";
 import calculateRecomendedSalers from "./calculateRecomendedSalers";
-import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 
 function SelectForwardToSaler({
   salers,
@@ -37,7 +37,9 @@ function SelectForwardToSaler({
   const user = auth.user as User;
 
   const [loading, setLoading] = useState(false);
+  // reforwarding指示是否重新显示选择框，correcting用于指示操作是“转发”还是“更正”
   const [reforwarding, setReforwarding] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
 
   const [toAddresses, setToAddresses] = useState<string[]>(
     forward?.to_addresses ?? []
@@ -173,26 +175,28 @@ function SelectForwardToSaler({
       .finally(() => setLoading(false));
   };
 
+  const handleCorrect = () => {
+    setLoading(true);
+    mailApiRequest(`/emails/${emailId}/forward-correct`, {
+      to_addresses: toAddresses,
+      cc_addresses: ccAddresses,
+      reply_to: [user.email],
+    })
+      .then(() => {
+        message.success("更正成功");
+        setForwaded(toAddresses);
+        setCopied(ccAddresses);
+        setReforwarding(false);
+        setCorrecting(false);
+      })
+      .catch(() => {
+        message.error("更正失败");
+      })
+      .finally(() => setLoading(false));
+  };
+
   const handleMoreAction = ({ key }: { key: string }) => {
     switch (key) {
-      case "correct":
-        setLoading(true);
-        mailApiRequest(`/emails/${emailId}/forward-correct`, {
-          to_addresses: toAddresses,
-          cc_addresses: ccAddresses,
-          reply_to: [user.email],
-        })
-          .then(() => {
-            message.success("更正成功");
-            setForwaded(toAddresses);
-            setCopied(ccAddresses);
-            setReforwarding(false);
-          })
-          .catch(() => {
-            message.error("更正失败");
-          })
-          .finally(() => setLoading(false));
-        break;
       case "message":
         message.warning("功能开发中");
         break;
@@ -217,9 +221,20 @@ function SelectForwardToSaler({
           </span>
         )}
       </Space>
-      <Button type="link" onClick={() => setReforwarding(true)}>
-        重新转发
-      </Button>
+      <Space direction="vertical">
+        <Button type="link" onClick={() => setReforwarding(true)}>
+          重新转发
+        </Button>
+        <Button
+          type="link"
+          onClick={() => {
+            setReforwarding(true);
+            setCorrecting(true);
+          }}
+        >
+          更正记录
+        </Button>
+      </Space>
     </Flex>
   ) : (
     <Flex align="center" justify="space-between">
@@ -244,36 +259,48 @@ function SelectForwardToSaler({
         />
       </Space>
       <Space direction="vertical">
-        <Dropdown.Button
-          menu={{
-            items: [
-              {
-                label: "添加额外文本信息，再转发",
-                key: "message",
-                icon: <FormOutlined />,
-              },
-              {
-                label: "仅更正记录，不实际转发",
-                key: "correct",
-                icon: <CarryOutOutlined />,
-              },
-            ],
-            onClick: handleMoreAction,
-          }}
-          type="link"
-          size="small"
-          loading={loading}
-          disabled={toAddresses.length === 0 || loading}
-          onClick={handleForward}
-        >
-          转发
-        </Dropdown.Button>
+        {correcting ? (
+          <Button
+            style={{ width: "4rem" }}
+            type="link"
+            size="small"
+            loading={loading}
+            disabled={toAddresses.length === 0}
+            onClick={handleCorrect}
+          >
+            更正
+          </Button>
+        ) : (
+          <Dropdown.Button
+            menu={{
+              items: [
+                {
+                  label: "添加额外文本信息，再转发",
+                  key: "message",
+                  icon: <FormOutlined />,
+                },
+              ],
+              onClick: handleMoreAction,
+            }}
+            type="link"
+            size="small"
+            loading={loading}
+            disabled={toAddresses.length === 0 || loading}
+            onClick={handleForward}
+          >
+            转发
+          </Dropdown.Button>
+        )}
+
         {forwaded && (
           <Button
             style={{ width: "4rem" }}
             type="link"
             size="small"
-            onClick={() => setReforwarding(false)}
+            onClick={() => {
+              setReforwarding(false);
+              setCorrecting(false);
+            }}
           >
             取消
           </Button>
