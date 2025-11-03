@@ -31,6 +31,8 @@ const MailDispatchPage = () => {
             ? "询价"
             : entity.type === "ORDER"
             ? "订单"
+            : entity.type === "REMINDER"
+            ? "Remind"
             : null;
         return typeDisplay ? (
           <Tag color={INFO_DISPLAY_COLOR[typeDisplay]}>{typeDisplay}</Tag>
@@ -43,6 +45,7 @@ const MailDispatchPage = () => {
       valueEnum: {
         ORDER: "订单",
         RFQ: "询价",
+        REMINDER: "Remind",
         NULL: "其他",
       },
     },
