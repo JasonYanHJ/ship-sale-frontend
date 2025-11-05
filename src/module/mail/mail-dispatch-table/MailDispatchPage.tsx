@@ -154,13 +154,20 @@ const MailDispatchPage = () => {
       key: "dispatched",
       hideInTable: true,
       valueType: "select",
-      valueEnum: {
-        not_dispatched: "未分配",
-        dispatched: "已分配",
-      },
-      search: {
-        transform: (v) => v === "dispatched",
-      },
+      valueEnum: new Map([
+        [true, "已分配"],
+        [false, "未分配"],
+      ]),
+    },
+    {
+      title: "转发状态",
+      key: "forwarded",
+      hideInTable: true,
+      valueType: "select",
+      valueEnum: new Map([
+        [true, "已转发"],
+        [false, "未转发"],
+      ]),
     },
   ];
   return (

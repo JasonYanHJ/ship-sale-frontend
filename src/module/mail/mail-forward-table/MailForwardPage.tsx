@@ -158,6 +158,16 @@ const MailForwardPage = () => {
       hideInSearch: true,
       fixed: "right",
     },
+    {
+      title: "转发状态",
+      key: "forwarded",
+      hideInTable: true,
+      valueType: "select",
+      valueEnum: new Map([
+        [true, "已转发"],
+        [false, "未转发"],
+      ]),
+    },
   ];
 
   return (
