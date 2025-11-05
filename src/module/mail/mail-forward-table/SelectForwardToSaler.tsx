@@ -3,6 +3,7 @@ import {
   Dropdown,
   Flex,
   message,
+  Modal,
   Select,
   Space,
   Tag,
@@ -19,6 +20,7 @@ import { difference, union } from "lodash";
 import { MailTableDataSourceType } from "../mail-base-table/MailTable";
 import calculateRecomendedSalers from "./calculateRecomendedSalers";
 import { FormOutlined } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
 
 function SelectForwardToSaler({
   salers,
@@ -40,6 +42,9 @@ function SelectForwardToSaler({
   // reforwarding指示是否重新显示选择框，correcting用于指示操作是“转发”还是“更正”
   const [reforwarding, setReforwarding] = useState(false);
   const [correcting, setCorrecting] = useState(false);
+
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [additionalMessage, setAdditionalMessage] = useState("");
 
   const [toAddresses, setToAddresses] = useState<string[]>(
     forward?.to_addresses ?? []
@@ -156,12 +161,13 @@ function SelectForwardToSaler({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleForward = () => {
+  const handleForward = (additional_message: string | null = null) => {
     setLoading(true);
-    mailApiRequest(`/emails/${emailId}/forward`, {
+    return mailApiRequest(`/emails/${emailId}/forward`, {
       to_addresses: toAddresses,
       cc_addresses: ccAddresses,
       reply_to: [user.email],
+      additional_message,
     })
       .then(() => {
         message.success("转发成功");
@@ -198,7 +204,7 @@ function SelectForwardToSaler({
   const handleMoreAction = ({ key }: { key: string }) => {
     switch (key) {
       case "message":
-        message.warning("功能开发中");
+        setIsMessageModalOpen(true);
         break;
     }
   };
@@ -238,6 +244,23 @@ function SelectForwardToSaler({
     </Flex>
   ) : (
     <Flex align="center" justify="space-between">
+      <Modal
+        title="编辑额外信息"
+        open={isMessageModalOpen}
+        onCancel={() => setIsMessageModalOpen(false)}
+        onOk={() =>
+          handleForward(additionalMessage).then(() =>
+            setIsMessageModalOpen(false)
+          )
+        }
+        okText="转发"
+      >
+        <TextArea
+          rows={5}
+          value={additionalMessage}
+          onChange={(e) => setAdditionalMessage(e.target.value)}
+        />
+      </Modal>
       <Space direction="vertical" style={{ width: "100%" }}>
         <Select
           placeholder="收件人"
@@ -286,7 +309,7 @@ function SelectForwardToSaler({
             size="small"
             loading={loading}
             disabled={toAddresses.length === 0 || loading}
-            onClick={handleForward}
+            onClick={() => handleForward()}
           >
             转发
           </Dropdown.Button>
