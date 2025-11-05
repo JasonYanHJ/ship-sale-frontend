@@ -20,15 +20,47 @@ function calculateRecomendedSalers(
       .map((text) => text.replace(/\\n/g, " "))
       .join()
       .toLowerCase();
-    return salers
-      .flatMap((s) => {
-        const matchedTags = s.tags.filter((t) =>
-          extraText.includes(t.name.toLowerCase())
-        );
-        if (matchedTags.length === 0) return [];
-        return { ...s, matchedTags };
-      })
-      .sort((a, b) => b.matchedTags.length - a.matchedTags.length);
+    return (
+      salers
+        .flatMap((s) => {
+          const matchedTags = s.tags.filter((t) =>
+            extraText.includes(t.name.toLowerCase())
+          );
+          if (matchedTags.length === 0) return [];
+          return { ...s, matchedTags };
+        })
+        // 物料组（Duke组）的邮件，根据邮件主题中的客户名，直接转发给一线销售，而不是全部转发给组长duke
+        .map((s) => {
+          // 只特殊处理Duke的情况，其余情况原样返回
+          if (s.name !== "Duke Wang") return s;
+
+          // 对于推荐给Duke的邮件，根据物料组中一线销售的客户负责名单，如果符合，则将Duke改为对应一线销售
+          const responsibilities: Record<string, string[]> = {
+            "Colin Zhu": [
+              "Columbia",
+              "OSM",
+              "WSM global service",
+              "Synergy Denmark A/S",
+            ],
+            "Bella Chen": ["Fleet", "FML", "Teekay", "Scopia"],
+            "Lorna Wang": ["Anglo-eastern", "Seaspan", "Optium"],
+          };
+          for (const name in responsibilities) {
+            if (
+              responsibilities[name].some((client) =>
+                email.subject.toLowerCase().includes(client.toLowerCase())
+              )
+            ) {
+              return {
+                ...salers.find((s) => s.name === name)!,
+                matchedTags: [],
+              };
+            }
+          }
+          return s;
+        })
+        .sort((a, b) => b.matchedTags.length - a.matchedTags.length)
+    );
   }
 
   return [];
