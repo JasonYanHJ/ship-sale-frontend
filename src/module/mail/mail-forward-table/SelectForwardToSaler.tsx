@@ -104,16 +104,8 @@ function SelectForwardToSaler({
                   组长: {s.leader?.name ?? "-"}
                 </div>
                 <Space wrap>
-                  {s.tags.map((t) => (
-                    <Tag
-                      key={t.id}
-                      color={
-                        s.matchedTags.some((mt) => mt.id === t.id)
-                          ? "blue"
-                          : undefined
-                      }
-                      style={{ marginInlineEnd: 0 }}
-                    >
+                  {s.matchedTags.map((t) => (
+                    <Tag key={t.id} color="blue" style={{ marginInlineEnd: 0 }}>
                       {t.name}
                     </Tag>
                   ))}
