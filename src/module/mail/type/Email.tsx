@@ -20,6 +20,7 @@ export type Email = {
 
 export const INFO_DISPLAY_COLOR: { [key: string]: string } = {
   ShipServ: "#69e4dd",
+  Procure: "#428dc7",
   询价: "blue",
   订单: "gold",
 };

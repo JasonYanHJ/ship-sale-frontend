@@ -65,6 +65,7 @@ const MailDispatchPage = () => {
       valueType: "select",
       valueEnum: {
         ShipServ: "ShipServ",
+        Procure: "Procure",
         NULL: "其他",
       },
     },

@@ -36,7 +36,7 @@ const ShipServExtraTable = ({ table }: { table: (string | null)[][] }) => {
       if (typeof value !== "string") return value;
       return (
         <div
-          dangerouslySetInnerHTML={{ __html: value.replace("\n", "<br/>") }}
+          dangerouslySetInnerHTML={{ __html: value.replace(/\n/g, "<br/>") }}
         />
       );
     },

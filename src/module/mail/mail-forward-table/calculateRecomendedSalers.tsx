@@ -1,6 +1,6 @@
 import { SalerWithTags } from "../../saler/Saler";
 import { Tag } from "../../tag/Tag";
-import { ShipServExtra } from "../type/Attachment";
+import { ProcureExtra, ShipServExtra } from "../type/Attachment";
 import { Email, WithAttachments } from "../type/Email";
 
 function calculateRecomendedSalers(
@@ -9,10 +9,10 @@ function calculateRecomendedSalers(
 ): (SalerWithTags & { matchedTags: Tag[] })[] {
   if (email.type !== "RFQ") return [];
 
-  if (email.from_system === "ShipServ") {
+  if (email.from_system === "ShipServ" || email.from_system === "Procure") {
     const extraText = email.attachments
       .filter((m) => !!m.extra)
-      .map((m) => m.extra as ShipServExtra)
+      .map((m) => m.extra as ShipServExtra | ProcureExtra)
       .map(
         (extra) =>
           JSON.stringify(extra.meta_data) + JSON.stringify(extra.table_data)
