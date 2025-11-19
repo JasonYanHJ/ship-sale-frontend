@@ -35,20 +35,36 @@ function calculateRecomendedSalers(
           if (s.name !== "Duke Wang") return s;
 
           // 对于推荐给Duke的邮件，根据物料组中一线销售的客户负责名单，如果符合，则将Duke改为对应一线销售
-          const responsibilities: Record<string, string[]> = {
+          const responsibilities: Record<
+            string,
+            ["subject" | "from_system", string][]
+          > = {
             "Colin Zhu": [
-              "Columbia",
-              "OSM",
-              "WSM global service",
-              "Synergy Denmark A/S",
+              ["subject", "Columbia"],
+              ["subject", "OSM"],
+              ["subject", "WSM global service"],
+              ["subject", "Synergy Denmark A/S"],
+              ["subject", "Wallem"],
+              ["subject", "Thome Ship"],
             ],
-            "Bella Chen": ["Fleet", "FML", "Teekay", "Scopia"],
-            "Lorna Wang": ["Anglo-eastern", "Seaspan", "Optium"],
+            "Bella Chen": [
+              ["subject", "Fleet"],
+              ["subject", "FML"],
+              ["subject", "Teekay"],
+              ["subject", "Scorpio"],
+              ["from_system", "Procure"],
+            ],
+            "Lorna Wang": [
+              ["subject", "Anglo-eastern"],
+              ["subject", "Seaspan"],
+              ["subject", "Optimum"],
+            ],
           };
+
           for (const name in responsibilities) {
             if (
-              responsibilities[name].some((client) =>
-                email.subject.toLowerCase().includes(client.toLowerCase())
+              responsibilities[name].some((rule) =>
+                email[rule[0]]?.toLowerCase().includes(rule[1].toLowerCase())
               )
             ) {
               return {
