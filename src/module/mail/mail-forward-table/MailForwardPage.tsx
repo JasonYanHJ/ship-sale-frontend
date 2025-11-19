@@ -183,6 +183,7 @@ const MailForwardPage = () => {
 
         return result;
       }}
+      search={{ collapsed: false }}
       toolBarRender={() => [
         <Space key="default-cc" style={{ marginInlineEnd: 16 }}>
           默认抄送:

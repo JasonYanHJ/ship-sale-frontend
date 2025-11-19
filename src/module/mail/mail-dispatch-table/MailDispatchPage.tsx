@@ -178,6 +178,7 @@ const MailDispatchPage = () => {
         reloadAllDispatchers();
         return getAllMails(params);
       }}
+      search={{ collapsed: false }}
     />
   );
 };
