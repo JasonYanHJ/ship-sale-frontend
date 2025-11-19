@@ -117,6 +117,19 @@ const MailForwardPage = () => {
       },
     },
     {
+      title: "发送时间",
+      dataIndex: "date_sent",
+      minWidth: 100,
+      valueType: "dateTime",
+      hideInSearch: true,
+    },
+    {
+      title: "发送时间",
+      dataIndex: "date_sent",
+      valueType: "date",
+      hideInTable: true,
+    },
+    {
       title: "抄送",
       dataIndex: "cc",
       minWidth: 220,
@@ -129,19 +142,6 @@ const MailForwardPage = () => {
           </Space>
         );
       },
-    },
-    {
-      title: "发送时间",
-      dataIndex: "date_sent",
-      minWidth: 100,
-      valueType: "dateTime",
-      hideInSearch: true,
-    },
-    {
-      title: "发送时间",
-      dataIndex: "date_sent",
-      valueType: "date",
-      hideInTable: true,
     },
     {
       title: "转发",
