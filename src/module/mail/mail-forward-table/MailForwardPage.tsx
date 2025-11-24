@@ -40,6 +40,8 @@ const MailForwardPage = () => {
             ? "订单"
             : entity.type === "REMINDER"
             ? "Remind"
+            : entity.type === "MESSAGE"
+            ? "Message"
             : null;
         return typeDisplay ? (
           <Tag color={INFO_DISPLAY_COLOR[typeDisplay]}>{typeDisplay}</Tag>
@@ -53,6 +55,7 @@ const MailForwardPage = () => {
         ORDER: "订单",
         RFQ: "询价",
         REMINDER: "Remind",
+        MESSAGE: "Message",
         NULL: "其他",
       },
     },

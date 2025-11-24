@@ -13,7 +13,7 @@ export type Email = {
   date_sent: string;
   date_received: string;
   raw_headers: string;
-  type: "ORDER" | "RFQ" | "REMINDER" | null;
+  type: "ORDER" | "RFQ" | "REMINDER" | "MESSAGE" | null;
   from_system: "ShipServ" | "Procure" | null;
   dispatcher_id: number | null;
 };
