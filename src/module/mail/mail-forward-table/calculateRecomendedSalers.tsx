@@ -69,7 +69,7 @@ function calculateRecomendedSalers(
             ) {
               return {
                 ...salers.find((s) => s.name === name)!,
-                matchedTags: [],
+                matchedTags: s.matchedTags,
               };
             }
           }
