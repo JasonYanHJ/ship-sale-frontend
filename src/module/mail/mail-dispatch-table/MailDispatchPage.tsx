@@ -69,6 +69,7 @@ const MailDispatchPage = () => {
       valueEnum: {
         ShipServ: "ShipServ",
         Procure: "Procure",
+        Prodigy: "Prodigy",
         NULL: "其他",
       },
     },

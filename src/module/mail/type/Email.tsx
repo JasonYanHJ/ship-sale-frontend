@@ -14,13 +14,14 @@ export type Email = {
   date_received: string;
   raw_headers: string;
   type: "ORDER" | "RFQ" | "REMINDER" | "MESSAGE" | null;
-  from_system: "ShipServ" | "Procure" | null;
+  from_system: "ShipServ" | "Procure" | "Prodigy" | null;
   dispatcher_id: number | null;
 };
 
 export const INFO_DISPLAY_COLOR: { [key: string]: string } = {
   ShipServ: "#69e4dd",
   Procure: "#428dc7",
+  Prodigy: "#15A4CC",
   询价: "blue",
   订单: "gold",
 };
