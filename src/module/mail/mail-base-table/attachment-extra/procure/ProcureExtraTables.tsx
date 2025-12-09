@@ -28,8 +28,6 @@ const ProcureExtraTable = ({ table }: { table: (string | null)[][] }) => {
     })
   );
 
-  console.log(table);
-
   return (
     <StyledTable
       rowKey="key"
