@@ -32,3 +32,24 @@ export type ProcureExtra = BaseExtra & {
   table_data: (string | null)[][][];
   meta_data: Record<string, string>;
 };
+
+export type ProdigyExtra = BaseExtra & {
+  type: "Prodigy";
+  version: 1;
+  table_data: {
+    itemDescription: string;
+    makerRef: string;
+    partNo: string;
+    drawingNo: string;
+    positionNo: string;
+    componentName: string;
+    maker: string;
+    model: string;
+    componentSerialNo: string;
+    requestedQty: string;
+    requestedUOM: { code: string; name: string };
+    offeredQty: string;
+    offeredUOM: { code: string; name: string };
+  }[];
+  meta_data: Record<string, string>;
+};

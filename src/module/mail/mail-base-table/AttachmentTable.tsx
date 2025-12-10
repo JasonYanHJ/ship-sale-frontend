@@ -8,11 +8,18 @@ import {
   apiRequest,
 } from "../../../service/api-request/apiRequest";
 import { getAllTags } from "../../tag/tagService";
-import { Attachment, ProcureExtra, ShipServExtra } from "../type/Attachment";
+import {
+  Attachment,
+  ProcureExtra,
+  ProdigyExtra,
+  ShipServExtra,
+} from "../type/Attachment";
 import ShipServExtraDescription from "./attachment-extra/shipserv/ShipServExtraDescription";
 import ShipServExtraTables from "./attachment-extra/shipserv/ShipServExtraTables";
 import ProcureExtraDescription from "./attachment-extra/procure/ProcureExtraDescription";
 import ProcureExtraTables from "./attachment-extra/procure/ProcureExtraTables";
+import ProdigyExtraDescription from "./attachment-extra/prodigy/ProdigyExtraDescription";
+import ProdigyExtraTables from "./attachment-extra/prodigy/ProdigyExtraTable";
 
 type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
 const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
@@ -37,6 +44,12 @@ function expandedRowRender(record: AttachmentTableDatasource) {
         <>
           <ProcureExtraDescription extra={record.extra as ProcureExtra} />
           <ProcureExtraTables extra={record.extra as ProcureExtra} />
+        </>
+      )}
+      {record.extra?.type === "Prodigy" && (
+        <>
+          <ProdigyExtraDescription extra={record.extra as ProdigyExtra} />
+          <ProdigyExtraTables extra={record.extra as ProdigyExtra} />
         </>
       )}
     </div>
