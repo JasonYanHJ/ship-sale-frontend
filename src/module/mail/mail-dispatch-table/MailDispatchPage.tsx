@@ -70,6 +70,7 @@ const MailDispatchPage = () => {
         ShipServ: "ShipServ",
         Procure: "Procure",
         Prodigy: "Prodigy",
+        Vship: "Vship",
         NULL: "其他",
       },
     },
