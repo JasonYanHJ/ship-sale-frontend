@@ -27,7 +27,7 @@ const columns: TableProps["columns"] = [
   { title: "Offer UOM", dataIndex: ["offeredUOM", "name"] },
 ];
 
-const ProdigyExtraTables = ({ extra }: { extra: ProdigyExtra }) => {
+const ProdigyExtraTable = ({ extra }: { extra: ProdigyExtra }) => {
   return (
     <div>
       <div style={{ marginTop: 8, marginLeft: 8 }}>
@@ -44,4 +44,4 @@ const ProdigyExtraTables = ({ extra }: { extra: ProdigyExtra }) => {
   );
 };
 
-export default ProdigyExtraTables;
+export default ProdigyExtraTable;

@@ -1,6 +1,11 @@
 import { SalerWithTags } from "../../saler/Saler";
 import { Tag } from "../../tag/Tag";
-import { ProcureExtra, ProdigyExtra, ShipServExtra } from "../type/Attachment";
+import {
+  ProcureExtra,
+  ProdigyExtra,
+  ShipServExtra,
+  VshipExtra,
+} from "../type/Attachment";
 import { Email, WithAttachments } from "../type/Email";
 
 function calculateRecomendedSalers(
@@ -12,17 +17,21 @@ function calculateRecomendedSalers(
   if (
     email.from_system === "ShipServ" ||
     email.from_system === "Procure" ||
-    email.from_system === "Prodigy"
+    email.from_system === "Prodigy" ||
+    email.from_system === "Vship"
   ) {
     const extraText = email.attachments
       .filter((m) => !!m.extra)
-      .map((m) => m.extra as ShipServExtra | ProcureExtra | ProdigyExtra)
+      .map(
+        (m) =>
+          m.extra as ShipServExtra | ProcureExtra | ProdigyExtra | VshipExtra
+      )
       .map(
         (extra) =>
           JSON.stringify(extra.meta_data) +
           JSON.stringify(
             // 避免key影响推荐判断
-            extra.type === "Prodigy"
+            extra.type === "Prodigy" || extra.type === "Vship"
               ? extra.table_data.map((d) => Object.values(d))
               : extra.table_data
           )

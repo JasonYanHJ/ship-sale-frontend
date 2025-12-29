@@ -53,3 +53,18 @@ export type ProdigyExtra = BaseExtra & {
   }[];
   meta_data: Record<string, string>;
 };
+
+export type VshipExtra = BaseExtra & {
+  type: "Vship";
+  version: 1;
+  table_data: {
+    RodLineNo: number;
+    Enquired: number;
+    UnitType: string;
+    PartName: string;
+    MakersRef: string;
+    DrawingPos: string;
+    SparePartNotes: string;
+  }[];
+  meta_data: Record<string, string>;
+};

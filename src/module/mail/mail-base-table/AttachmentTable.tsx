@@ -13,13 +13,16 @@ import {
   ProcureExtra,
   ProdigyExtra,
   ShipServExtra,
+  VshipExtra,
 } from "../type/Attachment";
 import ShipServExtraDescription from "./attachment-extra/shipserv/ShipServExtraDescription";
 import ShipServExtraTables from "./attachment-extra/shipserv/ShipServExtraTables";
 import ProcureExtraDescription from "./attachment-extra/procure/ProcureExtraDescription";
 import ProcureExtraTables from "./attachment-extra/procure/ProcureExtraTables";
 import ProdigyExtraDescription from "./attachment-extra/prodigy/ProdigyExtraDescription";
-import ProdigyExtraTables from "./attachment-extra/prodigy/ProdigyExtraTable";
+import ProdigyExtraTable from "./attachment-extra/prodigy/ProdigyExtraTable";
+import VshipExtraDescription from "./attachment-extra/vship/VshipExtraDescription";
+import VshipExtraTable from "./attachment-extra/vship/VshipExtraTable";
 
 type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
 const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
@@ -49,7 +52,13 @@ function expandedRowRender(record: AttachmentTableDatasource) {
       {record.extra?.type === "Prodigy" && (
         <>
           <ProdigyExtraDescription extra={record.extra as ProdigyExtra} />
-          <ProdigyExtraTables extra={record.extra as ProdigyExtra} />
+          <ProdigyExtraTable extra={record.extra as ProdigyExtra} />
+        </>
+      )}
+      {record.extra?.type === "Vship" && (
+        <>
+          <VshipExtraDescription extra={record.extra as VshipExtra} />
+          <VshipExtraTable extra={record.extra as VshipExtra} />
         </>
       )}
     </div>
