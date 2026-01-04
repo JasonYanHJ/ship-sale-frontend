@@ -14,7 +14,7 @@ export type Email = {
   date_received: string;
   raw_headers: string;
   type: "ORDER" | "RFQ" | "REMINDER" | "MESSAGE" | null;
-  from_system: "ShipServ" | "Procure" | "Prodigy" | "Vship" | null;
+  from_system: "ShipServ" | "Procure" | "Prodigy" | "Vship" | "BSM" | null;
   dispatcher_id: number | null;
 };
 
@@ -23,6 +23,7 @@ export const INFO_DISPLAY_COLOR: { [key: string]: string } = {
   Procure: "#428dc7",
   Prodigy: "#15A4CC",
   Vship: "#348D70",
+  BSM: "#1E3767",
   询价: "blue",
   订单: "gold",
 };

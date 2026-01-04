@@ -78,6 +78,7 @@ const MailForwardPage = () => {
         Procure: "Procure",
         Prodigy: "Prodigy",
         Vship: "Vship",
+        BSM: "BSM",
         NULL: "其他",
       },
     },
