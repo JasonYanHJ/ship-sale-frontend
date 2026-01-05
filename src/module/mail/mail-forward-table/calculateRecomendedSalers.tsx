@@ -1,6 +1,7 @@
 import { SalerWithTags } from "../../saler/Saler";
 import { Tag } from "../../tag/Tag";
 import {
+  BsmExtra,
   ProcureExtra,
   ProdigyExtra,
   ShipServExtra,
@@ -18,20 +19,28 @@ function calculateRecomendedSalers(
     email.from_system === "ShipServ" ||
     email.from_system === "Procure" ||
     email.from_system === "Prodigy" ||
-    email.from_system === "Vship"
+    email.from_system === "Vship" ||
+    email.from_system === "BSM"
   ) {
     const extraText = email.attachments
       .filter((m) => !!m.extra)
       .map(
         (m) =>
-          m.extra as ShipServExtra | ProcureExtra | ProdigyExtra | VshipExtra
+          m.extra as
+            | ShipServExtra
+            | ProcureExtra
+            | ProdigyExtra
+            | VshipExtra
+            | BsmExtra
       )
       .map(
         (extra) =>
           JSON.stringify(extra.meta_data) +
           JSON.stringify(
             // 避免key影响推荐判断
-            extra.type === "Prodigy" || extra.type === "Vship"
+            extra.type === "Prodigy" ||
+              extra.type === "Vship" ||
+              extra.type === "BSM"
               ? extra.table_data.map((d) => Object.values(d))
               : extra.table_data
           )

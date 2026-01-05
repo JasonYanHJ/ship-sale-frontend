@@ -10,6 +10,7 @@ import {
 import { getAllTags } from "../../tag/tagService";
 import {
   Attachment,
+  BsmExtra,
   ProcureExtra,
   ProdigyExtra,
   ShipServExtra,
@@ -23,6 +24,8 @@ import ProdigyExtraDescription from "./attachment-extra/prodigy/ProdigyExtraDesc
 import ProdigyExtraTable from "./attachment-extra/prodigy/ProdigyExtraTable";
 import VshipExtraDescription from "./attachment-extra/vship/VshipExtraDescription";
 import VshipExtraTable from "./attachment-extra/vship/VshipExtraTable";
+import BsmExtraDescription from "./attachment-extra/bsm/BsmExtraDescription";
+import BsmExtraTable from "./attachment-extra/bsm/BsmExtraTable";
 
 type AttachmentTableDatasource = Omit<Attachment, "tags"> & { tags: string[] };
 const StyledProTable = styled(EditableProTable<AttachmentTableDatasource>)`
@@ -59,6 +62,12 @@ function expandedRowRender(record: AttachmentTableDatasource) {
         <>
           <VshipExtraDescription extra={record.extra as VshipExtra} />
           <VshipExtraTable extra={record.extra as VshipExtra} />
+        </>
+      )}
+      {record.extra?.type === "BSM" && (
+        <>
+          <BsmExtraDescription extra={record.extra as BsmExtra} />
+          <BsmExtraTable extra={record.extra as BsmExtra} />
         </>
       )}
     </div>

@@ -68,3 +68,23 @@ export type VshipExtra = BaseExtra & {
   }[];
   meta_data: Record<string, string>;
 };
+
+export type BsmExtra = BaseExtra & {
+  type: "BSM";
+  version: 1;
+  table_data: {
+    number: number;
+    partNumber: string;
+    productCode: string;
+    description: string;
+    uomName: string;
+    quantity: number;
+    remarksToVendor: string | null;
+    equipmentName: string;
+    maker: string;
+    modelNumber: string;
+    drawingNumber: string;
+    serialNumber: string;
+  }[];
+  meta_data: Record<string, string | null>;
+};
