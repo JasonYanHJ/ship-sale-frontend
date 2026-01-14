@@ -16,5 +16,9 @@ export type Saler = {
 } & BaseSaler;
 
 export type SalerWithTags = {
-  tags: Tag[];
+  tags: (Tag & {
+    pivot: {
+      auto_forward: boolean;
+    };
+  })[];
 } & Saler;

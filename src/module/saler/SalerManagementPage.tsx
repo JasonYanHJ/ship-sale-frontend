@@ -5,15 +5,61 @@ import {
   getAllSalers,
   storeSaler,
   updateSaler,
+  updateSalerTagAutoForward,
 } from "./salerService";
 import { withMessage } from "../../service/api-request/apiRequest";
-import { Saler, SalerWithTags } from "./Saler";
+import { SalerWithTags } from "./Saler";
 import { Popconfirm, Space, Tag, Typography } from "antd";
 import { getAllTags } from "../tag/tagService";
 import "./SalerManagementPage.css";
 
-type DataSourceType = Omit<Saler, "created_at" | "updated_at"> & {
+type DataSourceType = Omit<SalerWithTags, "created_at" | "updated_at"> & {
   tag_names: string[];
+};
+
+const TagWithAutoForwardToggle = ({
+  tag,
+  saler_id,
+  reloadAllSalers,
+}: {
+  tag: SalerWithTags["tags"][0];
+  saler_id: number;
+  reloadAllSalers: () => Promise<void>;
+}) => {
+  return tag.pivot.auto_forward ? (
+    <Popconfirm
+      title="是否改为常规标签？"
+      onConfirm={() =>
+        withMessage(updateSalerTagAutoForward(saler_id, tag.id, false)).then(
+          () => reloadAllSalers()
+        )
+      }
+    >
+      <Tag
+        color={tag.pivot.auto_forward ? "red" : undefined}
+        style={{ cursor: "pointer" }}
+      >
+        {tag.name}
+      </Tag>
+    </Popconfirm>
+  ) : (
+    <Popconfirm
+      title="是否改为自动转发标签？"
+      description="请确保匹配此标签的询价邮件一定由这位销售负责！"
+      onConfirm={() =>
+        withMessage(updateSalerTagAutoForward(saler_id, tag.id, true)).then(
+          () => reloadAllSalers()
+        )
+      }
+    >
+      <Tag
+        color={tag.pivot.auto_forward ? "red" : undefined}
+        style={{ cursor: "pointer" }}
+      >
+        {tag.name}
+      </Tag>
+    </Popconfirm>
+  );
 };
 
 const SalerManagementPage = () => {
@@ -75,9 +121,17 @@ const SalerManagementPage = () => {
       }),
       render: (_, entity) => (
         <Space wrap>
-          {entity.tag_names.map((name) => (
-            <Tag key={name}>{name}</Tag>
-          ))}
+          {entity.tags
+            .slice()
+            .sort((a, b) => +b.pivot.auto_forward - +a.pivot.auto_forward)
+            .map((tag) => (
+              <TagWithAutoForwardToggle
+                key={tag.id}
+                tag={tag}
+                saler_id={entity.id}
+                reloadAllSalers={reloadAllSalers}
+              />
+            ))}
         </Space>
       ),
     },
@@ -129,7 +183,10 @@ const SalerManagementPage = () => {
         columns={columns}
         value={allSalers?.map((saler) => ({
           ...saler,
-          tag_names: saler.tags.map((tag) => tag.name),
+          tag_names: saler.tags
+            .slice()
+            .sort((a, b) => +b.pivot.auto_forward - +a.pivot.auto_forward)
+            .map((tag) => tag.name),
         }))}
         editable={{
           type: "single",
@@ -172,6 +229,7 @@ const SalerManagementPage = () => {
             email: "abc@example.com",
             description: "",
             tag_names: [],
+            tags: [],
             leader: null,
             leader_id: null,
             abbr: null,

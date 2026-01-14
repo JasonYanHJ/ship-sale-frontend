@@ -16,3 +16,14 @@ export async function storeSaler(fields: Partial<Saler>) {
 export async function deleteSaler(id: number) {
   return apiRequest(`/salers/destroy/${id}`);
 }
+
+export async function updateSalerTagAutoForward(
+  saler_id: number,
+  tag_id: number,
+  auto_forward: boolean
+) {
+  return apiRequest<SalerWithTags>(
+    `/salers/update-tag-auto-forward/${saler_id}`,
+    { tag_id, auto_forward }
+  );
+}
