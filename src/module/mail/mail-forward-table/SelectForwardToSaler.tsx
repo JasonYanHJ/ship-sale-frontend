@@ -61,8 +61,11 @@ function SelectForwardToSaler({
   // 没有转发记录时，抄送人受全局默认抄送人影响
   useEffect(() => {
     if (forwaded) return;
-    setCcAddresses(defaultCcAddresses);
-  }, [defaultCcAddresses, forwaded]);
+    // 订单邮件默认需要额外抄送order邮箱
+    if (email.type === "ORDER")
+      setCcAddresses(["order@dan-marine.com", ...defaultCcAddresses]);
+    else setCcAddresses(defaultCcAddresses);
+  }, [defaultCcAddresses, email.type, forwaded]);
 
   // 当选择的收件人有组长时，自动将组长添加到抄送
   const handleToAddressesChange = useCallback(
