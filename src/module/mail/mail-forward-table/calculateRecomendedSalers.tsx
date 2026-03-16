@@ -11,7 +11,7 @@ import { Email, WithAttachments } from "../type/Email";
 
 function calculateRecomendedSalers(
   email: WithAttachments<Email>,
-  salers: SalerWithTags[]
+  salers: SalerWithTags[],
 ): (SalerWithTags & { matchedTags: Tag[] })[] {
   if (email.type !== "RFQ") return [];
 
@@ -31,7 +31,7 @@ function calculateRecomendedSalers(
             | ProcureExtra
             | ProdigyExtra
             | VshipExtra
-            | BsmExtra
+            | BsmExtra,
       )
       .map(
         (extra) =>
@@ -42,8 +42,8 @@ function calculateRecomendedSalers(
               extra.type === "Vship" ||
               extra.type === "BSM"
               ? extra.table_data.map((d) => Object.values(d))
-              : extra.table_data
-          )
+              : extra.table_data,
+          ),
       )
       .map((text) => text.replace(/\\n/g, " "))
       .join()
@@ -52,7 +52,7 @@ function calculateRecomendedSalers(
       salers
         .flatMap((s) => {
           const matchedTags = s.tags.filter((t) =>
-            extraText.includes(t.name.toLowerCase())
+            extraText.includes(t.name.toLowerCase()),
           );
           if (matchedTags.length === 0) return [];
           return { ...s, matchedTags };
@@ -74,25 +74,26 @@ function calculateRecomendedSalers(
               ["subject", "Synergy Denmark A/S"],
               ["subject", "Wallem"],
               ["subject", "Thome Ship"],
-            ],
-            "Bella Chen": [
-              ["subject", "Fleet"],
-              ["subject", "FML"],
-              ["subject", "Teekay"],
-              ["subject", "Scorpio"],
-              ["from_system", "Procure"],
+              ["subject", "Berge Bulk"],
+              ["subject", " Chellaram Shipping"],
             ],
             "Lorna Wang": [
               ["subject", "Anglo-eastern"],
               ["subject", "Seaspan"],
               ["subject", "Optimum"],
+              ["subject", "Norbulk Shipping"],
+              ["subject", "NYK Shipmanagement"],
+              ["subject", "Scorpio"],
+              ["subject", "Teekay"],
+              ["from_system", "Procure"],
+              ["from_system", "BSM"],
             ],
           };
 
           for (const name in responsibilities) {
             if (
               responsibilities[name].some((rule) =>
-                email[rule[0]]?.toLowerCase().includes(rule[1].toLowerCase())
+                email[rule[0]]?.toLowerCase().includes(rule[1].toLowerCase()),
               )
             ) {
               return {
