@@ -70,7 +70,6 @@ function calculateRecomendedSalers(
             "Colin Zhu": [
               ["subject", "Columbia"],
               ["subject", "OSM"],
-              ["subject", "WSM global service"],
               ["subject", "Synergy Denmark A/S"],
               ["subject", "Wallem"],
               ["subject", "Thome Ship"],
@@ -85,6 +84,7 @@ function calculateRecomendedSalers(
               ["subject", "NYK Shipmanagement"],
               ["subject", "Scorpio"],
               ["subject", "Teekay"],
+              ["subject", "WSM global service"],
               ["from_system", "Procure"],
               ["from_system", "BSM"],
             ],
