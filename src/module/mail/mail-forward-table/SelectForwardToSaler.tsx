@@ -44,17 +44,23 @@ function SelectForwardToSaler({
   const [correcting, setCorrecting] = useState(false);
 
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-  const [additionalMessage, setAdditionalMessage] = useState("");
+  const [additionalMessage, setAdditionalMessage] = useState(
+    // Procure系统的邮件额外设置提醒文本
+    email.from_system === "Procure" &&
+      (email.type === "RFQ" || email.type === "REMINDER")
+      ? "该系统敏感船较多，请在报价之前先查询IMO号，如果涉敏，请内部沟通后再处理"
+      : "",
+  );
 
   const [toAddresses, setToAddresses] = useState<string[]>(
-    forward?.to_addresses ?? []
+    forward?.to_addresses ?? [],
   );
   const [forwaded, setForwaded] = useState<string[] | undefined>(
-    forward?.to_addresses
+    forward?.to_addresses,
   );
 
   const [ccAddresses, setCcAddresses] = useState<string[]>(
-    forward?.cc_addresses ?? []
+    forward?.cc_addresses ?? [],
   );
   const [copied, setCopied] = useState<string[]>(forward?.cc_addresses ?? []);
 
@@ -78,21 +84,21 @@ function SelectForwardToSaler({
         emails
           .map((email) => salers.find((s) => s.email === email)!)
           .filter((s) => s.leader)
-          .map((s) => s.leader!.email)
+          .map((s) => s.leader!.email),
       );
       setCcAddresses((cc) =>
-        union(difference(cc, leadersToRemove), leadersToAdd)
+        union(difference(cc, leadersToRemove), leadersToAdd),
       );
     },
-    [salers, toAddresses]
+    [salers, toAddresses],
   );
 
   const recomendedSalers = useMemo(
     () => calculateRecomendedSalers(email, salers),
-    [email, salers]
+    [email, salers],
   );
   const otherSalers = salers.filter((s) =>
-    recomendedSalers.every((rs) => rs.id !== s.id)
+    recomendedSalers.every((rs) => rs.id !== s.id),
   );
 
   const recomendedSalerOptions = useMemo(
@@ -126,7 +132,7 @@ function SelectForwardToSaler({
         ),
         value: s.email,
       })),
-    [recomendedSalers]
+    [recomendedSalers],
   );
   const { options: otherSalerOptions } = useSalerSelectOptions(otherSalers);
 
@@ -141,7 +147,7 @@ function SelectForwardToSaler({
         options: otherSalerOptions,
       },
     ],
-    [otherSalerOptions, recomendedSalerOptions]
+    [otherSalerOptions, recomendedSalerOptions],
   );
 
   // 初始化时，收件人自动填充系统推荐的销售人员并抄送对应的组长
@@ -245,7 +251,7 @@ function SelectForwardToSaler({
         onCancel={() => setIsMessageModalOpen(false)}
         onOk={() =>
           handleForward(additionalMessage).then(() =>
-            setIsMessageModalOpen(false)
+            setIsMessageModalOpen(false),
           )
         }
         okText="转发"
