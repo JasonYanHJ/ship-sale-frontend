@@ -85,7 +85,6 @@ function calculateRecomendedSalers(
               ["subject", "Teekay"],
               ["subject", "WSM global service"],
               ["from_system", "Procure"],
-              ["from_system", "BSM"],
             ],
           };
 
