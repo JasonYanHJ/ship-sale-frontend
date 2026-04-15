@@ -22,6 +22,22 @@ import calculateRecomendedSalers from "./calculateRecomendedSalers";
 import { FormOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 
+function getDefaultAdditionalMessage(
+  email: Pick<MailTableDataSourceType, "from_system" | "subject">,
+) {
+  const subject = email.subject.toLowerCase();
+
+  if (email.from_system === "Procure") {
+    return "该系统敏感船较多，请在报价之前先查询IMO号，如果涉敏，请内部沟通后再处理";
+  }
+
+  if (email.from_system === "ShipServ" && subject.includes("ugland")) {
+    return "Ugland大船东，务必遵守货期，高品质。";
+  }
+
+  return "";
+}
+
 function SelectForwardToSaler({
   salers,
   forward,
@@ -45,11 +61,7 @@ function SelectForwardToSaler({
 
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [additionalMessage, setAdditionalMessage] = useState(
-    // Procure系统的邮件额外设置提醒文本
-    email.from_system === "Procure" &&
-      (email.type === "RFQ" || email.type === "REMINDER")
-      ? "该系统敏感船较多，请在报价之前先查询IMO号，如果涉敏，请内部沟通后再处理"
-      : "",
+    getDefaultAdditionalMessage(email),
   );
 
   const [toAddresses, setToAddresses] = useState<string[]>(
