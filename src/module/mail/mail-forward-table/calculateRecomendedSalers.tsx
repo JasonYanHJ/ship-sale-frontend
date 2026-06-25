@@ -69,14 +69,7 @@ function calculateRecomendedSalers(
           > = {
             "Colin Zhu": [
               ["subject", "Columbia"],
-              ["subject", "OSM Maritime"],
-              ["subject", "OSM Ship"],
-              ["subject", "OSM tankers"],
-              ["subject", "OSM bergen"],
-              ["subject", "OSM THOME"],
-              ["subject", "OSM offshore"],
               ["subject", "Wallem"],
-              ["subject", "Thome Ship"],
               ["subject", "Berge Bulk"],
               ["subject", " Chellaram Shipping"],
             ],
