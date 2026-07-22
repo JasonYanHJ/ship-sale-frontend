@@ -75,6 +75,7 @@ function calculateRecomendedSalers(
             ],
             "Lorna Wang": [
               ["subject", "Anglo-eastern"],
+              ["subject", "Anglo eastern"],
               ["subject", "Seaspan"],
               ["subject", "Optimum"],
               ["subject", "Norbulk Shipping"],
