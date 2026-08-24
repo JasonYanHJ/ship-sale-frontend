@@ -22,20 +22,40 @@ import calculateRecomendedSalers from "./calculateRecomendedSalers";
 import { FormOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 
+const CMA_CUSTOMERS = [
+  "CMA Ships France",
+  "CMA CGM C/O",
+  "ANL Singapore",
+  "CMA CGM ASIA SHIPPING",
+  "AMERICAN PRESIDENT LINES",
+];
+
 function getDefaultAdditionalMessage(
-  email: Pick<MailTableDataSourceType, "from_system" | "subject">,
+  email: Pick<MailTableDataSourceType, "from_system" | "subject" | "type">,
 ) {
   const subject = email.subject.toLowerCase();
+  const messages: string[] = [];
 
   if (email.from_system === "Procure") {
-    return "该系统敏感船较多，请在报价之前先查询IMO号，如果涉敏，请内部沟通后再处理";
+    messages.push(
+      "该系统敏感船较多，请在报价之前先查询IMO号，如果涉敏，请内部沟通后再处理",
+    );
   }
 
   if (email.from_system === "ShipServ" && subject.includes("ugland")) {
-    return "Ugland大船东，务必遵守货期，高品质。";
+    messages.push("Ugland大船东，务必遵守货期，高品质。");
   }
 
-  return "";
+  if (
+    email.type === "RFQ" &&
+    CMA_CUSTOMERS.some((customer) =>
+      subject.includes(customer.toLowerCase()),
+    )
+  ) {
+    messages.push("CMA报价请查系统保持价格统一");
+  }
+
+  return messages.join("\n");
 }
 
 function SelectForwardToSaler({
@@ -322,7 +342,7 @@ function SelectForwardToSaler({
             size="small"
             loading={loading}
             disabled={toAddresses.length === 0 || loading}
-            onClick={() => handleForward()}
+            onClick={() => handleForward(additionalMessage || null)}
           >
             转发
           </Dropdown.Button>
