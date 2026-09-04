@@ -30,6 +30,9 @@ const CMA_CUSTOMERS = [
   "AMERICAN PRESIDENT LINES",
 ];
 
+const CROWLEY_MESSAGE =
+  "CROWLEY GOVERNMENT SERVICES, INC. / Crowley Government Solutions是 Crowley Maritime Corporation 旗下专门做美国政府及军方业务的板块。Crowley 的 Government Services 长期涉及 美国政府船舶管理、海运物流、港口服务、工程及国防项目；需要高品质件，原厂件，不要用国产替代";
+
 function getDefaultAdditionalMessage(
   email: Pick<MailTableDataSourceType, "from_system" | "subject" | "type">,
 ) {
@@ -53,6 +56,13 @@ function getDefaultAdditionalMessage(
     )
   ) {
     messages.push("CMA报价请查系统保持价格统一");
+  }
+
+  if (
+    email.type === "RFQ" &&
+    subject.includes("crowley government services inc.")
+  ) {
+    messages.push(CROWLEY_MESSAGE);
   }
 
   return messages.join("\n");
