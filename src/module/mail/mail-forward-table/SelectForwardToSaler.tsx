@@ -65,6 +65,12 @@ function getDefaultAdditionalMessage(
     messages.push(CROWLEY_MESSAGE);
   }
 
+  if (email.type === "RFQ" && subject.includes("seapeak maritime")) {
+    messages.push(
+      "Seapeak 集团有俄罗斯 LNG 业务敞口，请注意查询船名，报价时请抄送algin",
+    );
+  }
+
   return messages.join("\n");
 }
 
