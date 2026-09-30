@@ -71,6 +71,14 @@ function getDefaultAdditionalMessage(
     );
   }
 
+  if (email.type === "RFQ" && subject.includes("msc shipmanagement ltd.")) {
+    messages.push("MSC邮件请第一时间回复，并告知客户正在处理中。");
+  }
+
+  if (email.type === "RFQ" && email.from_system === "BSM") {
+    messages.push("报价请一定标明产品来源/品质，客户高度看重");
+  }
+
   return messages.join("\n");
 }
 
