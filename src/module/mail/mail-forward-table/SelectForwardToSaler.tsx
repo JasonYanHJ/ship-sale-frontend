@@ -79,6 +79,13 @@ function getDefaultAdditionalMessage(
     messages.push("报价请一定标明产品来源/品质，客户高度看重");
   }
 
+  if (
+    email.type === "RFQ" &&
+    subject.includes("teekay marine (singapore) ltd")
+  ) {
+    messages.push("以前给TEEKAY 供应过船队订单的 请大家查记录保持价格一致");
+  }
+
   return messages.join("\n");
 }
 
