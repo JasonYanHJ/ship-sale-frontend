@@ -86,6 +86,14 @@ function getDefaultAdditionalMessage(
     messages.push("以前给TEEKAY 供应过船队订单的 请大家查记录保持价格一致");
   }
 
+  if (
+    email.type === "RFQ" &&
+    email.from_system === "ShipServ" &&
+    subject.includes("poseidon maritime services pte ltd")
+  ) {
+    messages.push("Poseidon的询价，请找魏总看过后再安排报价，谢谢~");
+  }
+
   return messages.join("\n");
 }
 
