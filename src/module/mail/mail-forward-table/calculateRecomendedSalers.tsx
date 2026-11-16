@@ -68,7 +68,8 @@ function calculateRecomendedSalers(
             ["subject" | "from_system", string][]
           > = {
             "Colin Zhu": [
-              ["subject", "Columbia"],
+              ["subject", "Columbia Shipmanagement"],
+              ["subject", "Columbia Cruise"],
               ["subject", "Wallem"],
               ["subject", "Berge Bulk"],
               ["subject", " Chellaram Shipping"],
