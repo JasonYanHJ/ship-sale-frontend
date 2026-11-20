@@ -94,6 +94,12 @@ function getDefaultAdditionalMessage(
     messages.push("Poseidon的询价，请找魏总看过后再安排报价，谢谢~");
   }
 
+  if (email.type === "RFQ" && subject.includes("wallem group")) {
+    messages.push(
+      "Wallem以下三条船报价需报运费，运费要和Jamie沟通\n· Jenggala 21\n· Jenggala Bango\n· Jenggala Nassim",
+    );
+  }
+
   return messages.join("\n");
 }
 
